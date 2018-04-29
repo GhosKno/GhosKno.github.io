@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+
+  <meta name="keywords" content="Paper Note,VQA,machine learning,CNN," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言本篇记录的是关于2015年论文ABC-CNN: An Attention Based Convolutional Neural Network for Visual Question Answering的阅读笔记。 问题背景 视觉问答（Visual Question Answering，VQA），是一种涉及计算机视觉和自然语言处理的学习任务。这一任务的定义如下： A VQA system ta">
+<meta name="keywords" content="Paper Note,VQA,machine learning,CNN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ABC-CNN阅读笔记">
+<meta property="og:url" content="http://ghoskno.github.io/2018/04/29/ABC-CNN/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="前言本篇记录的是关于2015年论文ABC-CNN: An Attention Based Convolutional Neural Network for Visual Question Answering的阅读笔记。 问题背景 视觉问答（Visual Question Answering，VQA），是一种涉及计算机视觉和自然语言处理的学习任务。这一任务的定义如下： A VQA system ta">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2019-11-10.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2017-53-47.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2019-05-33.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2018-22-59.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2018-57-28.png">
+<meta property="og:updated_time" content="2018-04-29T12:06:24.069Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ABC-CNN阅读笔记">
+<meta name="twitter:description" content="前言本篇记录的是关于2015年论文ABC-CNN: An Attention Based Convolutional Neural Network for Visual Question Answering的阅读笔记。 问题背景 视觉问答（Visual Question Answering，VQA），是一种涉及计算机视觉和自然语言处理的学习任务。这一任务的定义如下： A VQA system ta">
+<meta name="twitter:image" content="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2019-11-10.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2018/04/29/ABC-CNN/"/>
+
+
+
+
+
+  <title>ABC-CNN阅读笔记 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2018/04/29/ABC-CNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ABC-CNN阅读笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-29T15:50:33+08:00">
+                2018-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇记录的是关于2015年论文<a href="https://arxiv.org/abs/1511.05960" target="_blank" rel="noopener">ABC-CNN: An Attention Based Convolutional Neural Network for Visual Question Answering</a>的阅读笔记。</p>
+<h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><blockquote>
+<p>视觉问答（Visual Question Answering，VQA），是一种涉及计算机视觉和自然语言处理的学习任务。这一任务的定义如下： A VQA system takes as input an image and a free-form, open-ended, natural-language question about the image and produces a natural-language answer as the output。 翻译为中文：一个VQA系统以一张图片和一个关于这张图片形式自由、开放式的自然语言问题作为输入，以生成一条自然语言答案作为输出。简单来说，VQA就是给定的图片进行问答。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p><strong>本文中会明显区别图像特征(image feature) 和 视觉特征(visual feature) 两词</strong></p>
+<h3 id="Abstract-Note"><a href="#Abstract-Note" class="headerlink" title="Abstract Note"></a>Abstract Note</h3><p>摘要部分中，论文阐述的重点是针对VQA问题，一般方法是增强对与问题相关的图像区域的关注(<strong>quesion-quided attention</strong>)，ABC-CNN中提出使用基于注意力模型的可配置卷积神经网络(<strong>attention based configurable convolution neural network</strong>)去提取输入图像的关注区域。</p>
+<blockquote>
+<p>ABC-CNN determines<br>an attention map for an image-question pair by convolving<br>the image feature map with configurable convolutional<br>kernels derived from the question’s semantics.</p>
+</blockquote>
+<p>即ABC-CNN的可配置卷积 <em>k</em> 核由输入的question的问题语义(question’s semantics)驱动和配置，从输入的image中提取image feature map并将其与卷积核 <em>k</em> 进行卷积操作，通过卷积的结果得到对应的输入image-question pair对应的<strong>attention map</strong>。</p>
+<h3 id="Introduction-Note"><a href="#Introduction-Note" class="headerlink" title="Introduction Note"></a>Introduction Note</h3><p>该部分提出的几个重点只要是：</p>
+<ol>
+<li>使用ABC-CNN作为一个统一的框架整合VQA问题中的视觉和语义信息。<blockquote>
+<p>use ABC-CNN as a unified framework to integrate the visual and semantic infomation for VQA.</p>
+</blockquote>
+</li>
+<li>整个ABC-CNN的实现思路是<strong>由问题驱动，寻找关注区域</strong>，即通过输入的问题，应用注意力模型寻找输入图片中的关注区域，提取特征并进行进一步的学习。</li>
+<li><p>ABC-CNN的组成为四个部分：<strong>vision part, question understand part, answer generation part, attention extraction part/vision and question understanding part</strong>。其中各个部分的特点为：</p>
+<ul>
+<li>vision part：使用CNN从图像中提取visual features，<strong>提取空间特征图(spatial features map)而不是提取单独的全局视觉特征(single global visual feature)</strong></li>
+<li>question understand part： 该部分使用LSTM模型[1]获得问题的嵌入(question embeddings[2])</li>
+<li>answer generation part: 使用简单的多类分类器生成answer</li>
+</ul>
+</li>
+<li><p>ABC-CNN模型的核心是将提取得到的 question-guided attention infomation 表现为 <strong>question-guided attention map</strong>。实现的方法是<strong>将输入的question从semantic space 映射到 isual space</strong>得到question embedding，再使用question embedding 配置卷积核 <strong><em>k</em></strong> ，通过 <strong><em>k</em></strong> 与image卷积操作得到<strong>question-guided attention map</strong></p>
+<blockquote>
+<p>It(question-guided attention map) is is achieved via a configurable convolutional neural network,where the convolutional kernels are generated by projecting the question embeddings from the semantic space into the visual space.</p>
+</blockquote>
+</li>
+<li><p>ABC-CNN认为得到的卷积核 <strong><em>k</em></strong> 与由question语义决定的视觉信息有相关或一致关系</p>
+</li>
+<li><p><strong>question-guided attention map</strong>反映的是image中各区域对目标<strong>answer</strong>的重要程度。可用于计算图中各区域的空间权重(spatially weight)，过滤图片image中与问题无关的区域/噪音</p>
+</li>
+</ol>
+<h5 id="个人对于这部分的一些疑问"><a href="#个人对于这部分的一些疑问" class="headerlink" title="个人对于这部分的一些疑问"></a>个人对于这部分的一些疑问</h5><ol>
+<li>如何得到<strong>question embeddings</strong>,因为对NLP相关内容了解的不深入，对如何通过问题的嵌入得到question在问题语义空间到视觉特征空间的映射存疑</li>
+<li>对于得到的卷积核 <strong><em>k</em></strong> 是否能有效表征特定对象的 visual features 存疑</li>
+</ol>
+<p><img src="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2019-11-10.png" alt="framework image"></p>
+<h3 id="Related-Work-Note"><a href="#Related-Work-Note" class="headerlink" title="Related-Work-Note"></a>Related-Work-Note</h3><p>这部分主要介绍了VQA问题与图像描述问题的背景、注意力模型的主要思想和可配置卷积神经网络。</p>
+<h4 id="Attention-models"><a href="#Attention-models" class="headerlink" title="Attention models"></a>Attention models</h4><p>这部分介绍了attention model在从图像中提取特征的方法，即使用RNN从输入image中提取一系列提议区域(proposal region)，通过从decoding LSTM 输出的隐藏状态和从提议区域中提取的视觉特征学习得到需要的attention weights</p>
+<h3 id="Attention-Based-Configurable-CNN-Note"><a href="#Attention-Based-Configurable-CNN-Note" class="headerlink" title="Attention Based Configurable CNN Note"></a>Attention Based Configurable CNN Note</h3><p>ABC-CNN模型的核心是<strong>attention extraction part</strong>，卷积核 <strong><em>k</em></strong> 将与图像特征(image features)相作用得到<strong>question-guided attention ma</strong>，其中卷积核 <strong><em>k</em></strong> 能表征question所需的视觉特征</p>
+<h4 id="Attention-Extraction"><a href="#Attention-Extraction" class="headerlink" title="Attention Extraction"></a>Attention Extraction</h4><ol>
+<li>卷积核 <strong><em>k</em></strong><br> $$k = σ(W_{sk}s + b_k), σ(x) = \frac{1}{1 + e−x}$$<br> 其中σ为sigmoid函数，s为question中对应对象的语义特征信息</li>
+<li>question-guided attention map <strong><em>m</em></strong><br> $$m_{ij} = P(ATT_{ij}|I,s) = \frac{e^{z_{ij}}}{\sum_i\sum_j e^{z_{ij}}} ， z = k * I$$<br> 其中I为图像特征(image features)</li>
+</ol>
+<h4 id="Question-Understanding"><a href="#Question-Understanding" class="headerlink" title="Question Understanding"></a>Question Understanding</h4><p><img src="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2017-53-47.png" alt="LSTM for query processing"></p>
+<p>$$i_t = \sigma(W_{vi}v_t + W_{hi}h_{t-1} + b_i)$$</p>
+<p>$$f_t = \sigma(W_{vf}v_t + W_{hf}h_{t-1} + b_f)$$</p>
+<p>$$o_t = \sigma(W_{vo}v_t + W_{ho}h_{t-1} + b_o)$$</p>
+<p>$$g_t = \phi(W_{vg}v_t + W_{hg}h_{t-1} + b_g)$$</p>
+<p>$$c_t = f_t\odot c_{t-1} + v_i\odot g_t$$</p>
+<p>$$h_t = o_t \odot \phi(c_t)$$</p>
+<p>其中</p>
+<ol>
+<li>$\phi$为hyperbolic tangent function</li>
+<li>LSTM的输入是question <strong><em>q</em></strong></li>
+<li>question <strong><em>q</em></strong> 的语言信息 <strong><em>s</em></strong> 通过对LSTM的输出 <strong><em>h</em></strong> 学习得到</li>
+</ol>
+<p>在此附上个人理解该部分的另一种形式的数据图<br><img src="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2019-05-33.png" alt="question understanding"></p>
+<h4 id="Image-Feature-Extraction"><a href="#Image-Feature-Extraction" class="headerlink" title="Image Feature Extraction"></a>Image Feature Extraction</h4><p>该部分主要说明如何对输入的image进行处理得到<strong>image features</strong></p>
+<p>操作方法是将输入的W<em>H</em>D图片分割为N<em>N的栅格区域，对每个栅格区域提取特征得到最后N</em>N*D的<strong>image feature map</strong></p>
+<p><img src="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2018-22-59.png" alt="image feature extraction"></p>
+<h4 id="Answer-Generation"><a href="#Answer-Generation" class="headerlink" title="Answer Generation"></a>Answer Generation</h4><p><img src="http://ock1p2k5t.bkt.clouddn.com/blog/abc-cnn/Screenshot%20from%202018-04-29%2018-57-28.png" alt="answer generation"></p>
+<p>这部分的多类分类器(mutil-class classifier)基于三个输入：</p>
+<ol>
+<li>原始图像特征图 <strong><em>I</em></strong> (original image feature map)</li>
+<li>密集问题嵌入 <strong><em>s</em></strong> (dense question embedding)</li>
+<li>注意力权重特征图 <strong><em>I’</em></strong> (attention weighted feature map)</li>
+</ol>
+<p>为了避免过拟合，该部分还使用1*1的卷积操作使 <strong><em>I’</em></strong> 的通道数减少，得到$I_r$用于计算最后结果<strong>answer</strong></p>
+<p><strong>相关公式</strong></p>
+<p>$$I’_i = I_i \odot m$$</p>
+<p>$$h = g(W_{ih}I + W_{rh}I_r + W_{sh}S + b_h)$$</p>
+<p>其中</p>
+<ol>
+<li>$m$为question-guided attention map</li>
+<li>$I’$为得到的attention weighted feature map</li>
+<li>$g(.)$为element-wise scaled hyperbolic tangent function:$g(x) = 1.7159\cdot tanh(\frac{2}{3}x)$</li>
+<li><strong><em>h</em></strong> 为question-image pair提取的最终特征(<strong>final projected feature</strong>)</li>
+<li>多类分类器使用<strong><em>softmax</em></strong>作为计算方法</li>
+</ol>
+<h2 id="引用内容"><a href="#引用内容" class="headerlink" title="引用内容"></a>引用内容</h2><ol>
+<li><a href="https://zh.wikipedia.org/zh-hans/長短期記憶" target="_blank" rel="noopener">LSTM-长短期记忆模型</a></li>
+<li><a href="https://www.zhihu.com/question/32275069/answer/80188672" target="_blank" rel="noopener">通俗解释embedding</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Paper-Note/" rel="tag"># Paper Note</a>
+          
+            <a href="/tags/VQA/" rel="tag"># VQA</a>
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+            <a href="/tags/CNN/" rel="tag"># CNN</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/11/roundmatch/" rel="next" title="分治法实现循环赛算法笔记">
+                <i class="fa fa-chevron-left"></i> 分治法实现循环赛算法笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题背景"><span class="nav-number">1.1.</span> <span class="nav-text">问题背景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Abstract-Note"><span class="nav-number">2.1.</span> <span class="nav-text">Abstract Note</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduction-Note"><span class="nav-number">2.2.</span> <span class="nav-text">Introduction Note</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#个人对于这部分的一些疑问"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">个人对于这部分的一些疑问</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Related-Work-Note"><span class="nav-number">2.3.</span> <span class="nav-text">Related-Work-Note</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-models"><span class="nav-number">2.3.1.</span> <span class="nav-text">Attention models</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Attention-Based-Configurable-CNN-Note"><span class="nav-number">2.4.</span> <span class="nav-text">Attention Based Configurable CNN Note</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-Extraction"><span class="nav-number">2.4.1.</span> <span class="nav-text">Attention Extraction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Question-Understanding"><span class="nav-number">2.4.2.</span> <span class="nav-text">Question Understanding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Image-Feature-Extraction"><span class="nav-number">2.4.3.</span> <span class="nav-text">Image Feature Extraction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Answer-Generation"><span class="nav-number">2.4.4.</span> <span class="nav-text">Answer Generation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用内容"><span class="nav-number">3.</span> <span class="nav-text">引用内容</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
