@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript,ES6," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言整理一些ES6标准的学习笔记，虽然网上已经很多了，还是想写一些hh文中有大部分参考了阮一峰老师的ECMAScript 6入门">
+<meta name="keywords" content="JavaScript,ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6学习笔记">
+<meta property="og:url" content="http://ghoskno.github.io/2016/11/20/es6/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="前言整理一些ES6标准的学习笔记，虽然网上已经很多了，还是想写一些hh文中有大部分参考了阮一峰老师的ECMAScript 6入门">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-23T03:55:49.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6学习笔记">
+<meta name="twitter:description" content="前言整理一些ES6标准的学习笔记，虽然网上已经很多了，还是想写一些hh文中有大部分参考了阮一峰老师的ECMAScript 6入门">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2016/11/20/es6/"/>
+
+
+
+
+
+  <title>ES6学习笔记 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2016/11/20/es6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-20T20:15:30+08:00">
+                2016-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS随笔/" itemprop="url" rel="index">
+                    <span itemprop="name">JS随笔</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>整理一些ES6标准的学习笔记，虽然网上已经很多了，还是想写一些hh<br>文中有大部分参考了阮一峰老师的<a href="https://www.gitbook.com/book/likebeta/es6tutorial/details" target="_blank" rel="noopener">ECMAScript 6入门</a></p>
+<a id="more"></a>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="块级作用域、let和const"><a href="#块级作用域、let和const" class="headerlink" title="块级作用域、let和const"></a>块级作用域、let和const</h3><p>ES6新加入了块级作用域，一个花括号<code>{}</code>就代表一个独立的作用域。简单来说被作用域嵌套时外层代码不会被内层代码块影响。看个简单的例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="string">'I am outside!'</span>); &#125;</span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="literal">false</span>) &#123;</span><br><span class="line">    <span class="comment">// 重复声明一次函数f</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="string">'I am inside!'</span>); &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  f();</span><br><span class="line">&#125;());</span><br><span class="line"><span class="comment">//ES5 result: I am inside!</span></span><br><span class="line"><span class="comment">//ES6 result: I am outside!</span></span><br></pre></td></tr></table></figure></p>
+<p>再就是<code>let</code>命令了，<code>let</code>命令的作用就是其所声明的变量，仅在其所在代码块内有效。需要注意的是，<strong>let不会像var一样声明提前</strong>，只能在定义之后使用，之前使用会抛出ReferenceError并且<strong>不允许在相同作用域内，重复声明同一个变量</strong>。因此，不能在函数内部重新声明参数。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  a[i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">a[<span class="number">6</span>](); </span><br><span class="line"><span class="comment">//result: 10</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  a[i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line">a[<span class="number">6</span>]();</span><br><span class="line"><span class="comment">//result: 6</span></span><br></pre></td></tr></table></figure>
+<p><code>const</code>命令的作用和限制呢，和其他语言差不多，感觉没啥好说的hh</p>
+<p>还有就是<code>var</code>和<code>let、const</code>声明变量对于全局对象属性的不同之处</p>
+<ol>
+<li>var命令和function命令声明的全局变量，属于全局对象的属性</li>
+<li>let命令、const命令、声明的全局变量，不属于全局对象的属性。</li>
+</ol>
+<p>###变量的解构赋值<br>ES6允许在对变量进行赋值时，按照一定模式从数组和对象中提取值进行赋值，称为<strong>解构</strong>。解构只能用于数组或对象。</p>
+<ul>
+<li>对数组的解构赋值，允许指定默认值</li>
+<li>对对象的解构赋值，属性没有次序，<strong>要求变量与属性同名</strong>（sigoyi）<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> [foo, [[bar], baz]] = [<span class="number">1</span>, [[<span class="number">2</span>], <span class="number">3</span>]];</span><br><span class="line"><span class="keyword">let</span> [x, y=<span class="string">'b'</span>] = [<span class="string">'a'</span>, <span class="literal">undefined</span>]; <span class="comment">// x='a', y='b'</span></span><br><span class="line"><span class="keyword">let</span> &#123; foo, bar &#125; = &#123; <span class="attr">foo</span>: <span class="string">"aaa"</span>, <span class="attr">bar</span>: <span class="string">"bbb"</span> &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="字符串的扩展——模板字符串"><a href="#字符串的扩展——模板字符串" class="headerlink" title="字符串的扩展——模板字符串"></a>字符串的扩展——模板字符串</h3><p>模板字符串是增强版的字符串，用反引号<code>（`）</code>标识。</p>
+<ol>
+<li>当作普通字符串使用</li>
+<li>定义多行字符串</li>
+<li>在字符串中嵌入变量<br>使用规则如下：</li>
+<li>在模板字符串中嵌入变量，需要将变量名写在${}之中。</li>
+<li>如果在模板字符串中需要使用反引号，则前面要用反斜杠转义。</li>
+<li>大括号内部可以进行运算，以及引用对象属性，其中还能调用函数。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多行字符串</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`string text line 1</span></span><br><span class="line"><span class="string">string text line 2`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 字符串中嵌入变量</span></span><br><span class="line"><span class="keyword">var</span> name = <span class="string">"Bob"</span>, time = <span class="string">"today"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`Hello <span class="subst">$&#123;name&#125;</span>, how are you <span class="subst">$&#123;time&#125;</span>?`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//对象属性</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;obj.x + obj.y&#125;</span>`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数调用</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"Hello World"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`foo : <span class="subst">$&#123;fn()&#125;</span>`</span>);</span><br></pre></td></tr></table></figure>
+<p>其实字符串扩展还有一部分是对字符串处理的增强，多是与字符编码相关的，博主也不是特别熟，这里就不多说了，有兴趣可以参考<a href="https://likebeta.gitbooks.io/es6tutorial/content/docs/string.html" target="_blank" rel="noopener">字符串的扩展</a></p>
+<h3 id="数值的扩展"><a href="#数值的扩展" class="headerlink" title="数值的扩展"></a>数值的扩展</h3><p>参考<a href="https://likebeta.gitbooks.io/es6tutorial/content/docs/number.html" target="_blank" rel="noopener">数值的扩展</a>(<del>太懒不讲</del>)</p>
+<h3 id="数组的扩展"><a href="#数组的扩展" class="headerlink" title="数组的扩展"></a>数组的扩展</h3><p>ES6中提供了<strong>数组推导</strong>的方法即利用现有数组生成新数组的简化写法<code>for...of</code>，允许多重循环<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</span><br><span class="line"><span class="keyword">var</span> a2 = [<span class="keyword">for</span> (i <span class="keyword">of</span> a1) i * <span class="number">2</span>];</span><br><span class="line">a2 <span class="comment">// [2, 4, 6, 8]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> years = [ <span class="number">1954</span>, <span class="number">1974</span>, <span class="number">1990</span>, <span class="number">2006</span>, <span class="number">2010</span>, <span class="number">2014</span> ];</span><br><span class="line">[<span class="keyword">for</span> (year <span class="keyword">of</span> years) <span class="keyword">if</span> (year &gt; <span class="number">2000</span> &amp;&amp; year &lt; <span class="number">2010</span>) year];</span><br><span class="line"><span class="comment">// [ 2006]</span></span><br></pre></td></tr></table></figure></p>
+<p>还有一些额外的数组处理方法</p>
+<ul>
+<li><code>Array.from</code>可以将两类对象转为真正的数组：类似数组的对象（array-like object，有length属性）和可遍历（iterable）的对象。</li>
+<li><code>Array.of</code>可将一组值转化为数组对象。</li>
+<li>实例方法<code>copyWithin</code>可将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。</li>
+<li>实例的<code>find</code>方法，用于找出第一个符合条件的数组成员。接受一个回调函数<code>(value, index, arr)=&gt;{}</code>作为参数，对每个元素执行该函数，返回第一个返回值为<code>true</code>的成员。</li>
+<li>实例的<code>findIndex</code>方法与<code>find</code>类似，返回成员下标。</li>
+<li><p>数组实例的<code>entries()</code>，<code>keys()</code>和<code>values()</code>方法，返回数组的遍历器对象，keys()是对键名的遍历、values()是对键值的遍历，entries()是对键值对的遍历。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> index <span class="keyword">of</span> [<span class="string">'a'</span>, <span class="string">'b'</span>].keys()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> elem <span class="keyword">of</span> [<span class="string">'a'</span>, <span class="string">'b'</span>].values()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(elem);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 'a'</span></span><br><span class="line"><span class="comment">// 'b'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> [index, elem] <span class="keyword">of</span> [<span class="string">'a'</span>, <span class="string">'b'</span>].entries()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(index, elem);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 0 "a"</span></span><br><span class="line"><span class="comment">// 1 "b"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>扩展运算符<code>...</code>，简而言之扩展运算符可以将数组扩展为以逗号分割的参数列表</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">onsole.log(...[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])  </span><br><span class="line"><span class="comment">// 1 2 3  </span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>, ...[<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], <span class="number">5</span>)  </span><br><span class="line"><span class="comment">// 1 2 3 4 5  </span></span><br><span class="line">[...document.querySelectorAll(<span class="string">'div'</span>)]  </span><br><span class="line"><span class="comment">// [&lt;div&gt;, &lt;div&gt;, &lt;div&gt;]</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="函数的扩展"><a href="#函数的扩展" class="headerlink" title="函数的扩展"></a>函数的扩展</h3><ol>
+<li>ES6允许为函数的参数设置默认值，使用=形式直接写在参数定义的后面<ul>
+<li>指定了默认值以后，函数的length属性，将返回没有指定默认值的参数个数。</li>
+<li>参数默认值所处的作用域，不是全局作用域，而是函数作用域。</li>
+</ul>
+</li>
+<li><p>rest运算符<code>...</code>，与扩展运算符为互逆操作，即<strong><code>...</code>+变量名形式与<code>...</code>+数组形式互逆</strong>，<code>...变量名</code>必须作为最后一个参数且函数的length属性不包括rest参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">...values</span>) </span>&#123;</span><br><span class="line">   <span class="keyword">let</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">var</span> val <span class="keyword">of</span> values) &#123;</span><br><span class="line">      sum += val;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(<span class="number">2</span>, <span class="number">5</span>, <span class="number">3</span>) <span class="comment">// 10</span></span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">a, ...b</span>) </span>&#123;&#125;).length  <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>箭头函数<code>=&gt;</code>,大家都知道吧hhh，不说了</p>
+</li>
+</ol>
+<h3 id="对象扩展-Symbol、Proxy"><a href="#对象扩展-Symbol、Proxy" class="headerlink" title="对象扩展 Symbol、Proxy"></a>对象扩展 <code>Symbol、Proxy</code></h3><h4 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h4><p><code>Symbol</code>是ES6引入的一种新的原始数据类型，表示独一无二的值。目的是从根本上防止属性名的冲突。<br>将<code>Symbol</code>用于对象的属性名，就能保证不会出现同名的属性<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> mySymbol = <span class="built_in">Symbol</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第一种写法</span></span><br><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line">a[mySymbol] = <span class="string">'Hello!'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二种写法</span></span><br><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">  [mySymbol]: <span class="string">'Hello!'</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第三种写法</span></span><br><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(a, mySymbol, &#123; <span class="attr">value</span>: <span class="string">'Hello!'</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以上写法都得到同样结果</span></span><br><span class="line">a[mySymbol] <span class="comment">// "Hello!"</span></span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是，<strong>Symbol值作为对象属性名时，不能用点运算符</strong><br>具体<code>Symbol.for()、Symbol.keyFor()</code>方法的说明可以参考<a href="https://likebeta.gitbooks.io/es6tutorial/content/docs/symbol.html" target="_blank" rel="noopener">Symbol</a></p>
+<p><code>Proxy</code>可以简单理解为为对象的访问增加一层代理，对对象的访问都会先经过代理层的拦截<br>给出一个简单的例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">  name: <span class="string">"张三"</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(person, &#123;</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span>(<span class="params">target, property</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> property <span class="keyword">in</span> target ? target[property] : <span class="string">"不存在的"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">proxy.name <span class="comment">// "张三"</span></span><br><span class="line">proxy.title <span class="comment">// "不存在的"</span></span><br></pre></td></tr></table></figure></p>
+<p>具体<code>Proxy</code>可拦截的操作可参考<a href="https://likebeta.gitbooks.io/es6tutorial/content/docs/proxy.html" target="_blank" rel="noopener">Proxy概述</a></p>
+<h3 id="Generator函数"><a href="#Generator函数" class="headerlink" title="Generator函数"></a>Generator函数</h3><p>还是贴一下参考资料好了，人家写的是真好<a href="https://likebeta.gitbooks.io/es6tutorial/content/docs/generator.html" target="_blank" rel="noopener">Generator 函数</a></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这篇好像贴别人的参考有点多哈<br>没关系，重在参与～</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/23/canvas-star/" rel="next" title="HTML5 canvas制作动态随机星图">
+                <i class="fa fa-chevron-left"></i> HTML5 canvas制作动态随机星图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/21/vue-bind/" rel="prev" title="简单实现仿Vuejs双向绑定">
+                简单实现仿Vuejs双向绑定 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#块级作用域、let和const"><span class="nav-number">2.1.</span> <span class="nav-text">块级作用域、let和const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串的扩展——模板字符串"><span class="nav-number">2.2.</span> <span class="nav-text">字符串的扩展——模板字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数值的扩展"><span class="nav-number">2.3.</span> <span class="nav-text">数值的扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组的扩展"><span class="nav-number">2.4.</span> <span class="nav-text">数组的扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数的扩展"><span class="nav-number">2.5.</span> <span class="nav-text">函数的扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象扩展-Symbol、Proxy"><span class="nav-number">2.6.</span> <span class="nav-text">对象扩展 Symbol、Proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Symbol"><span class="nav-number">2.6.1.</span> <span class="nav-text">Symbol</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generator函数"><span class="nav-number">2.7.</span> <span class="nav-text">Generator函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

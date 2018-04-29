@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>canvas star demo</title>
+    <style type="text/css">
+    body {
+        text-align: center;
+        overflow: hidden;
+        background: #C4C6C8;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="mycanvas"></canvas>
+    <script type="text/javascript">
+    var width = window.innerWidth,
+        height = window.innerHeight,
+                                                      //获取浏览器视窗的尺寸
+        amount = 50;                                  //出现在画布上的星星个数
+    var cs = document.getElementById('mycanvas'),     //获得canvas元素
+        cont = cs.getContext('2d');                   //对canvas元素进行2d渲染，此后的对画布操作即对cont的操作
+    cs.width = width;
+    cs.height = height;
+                                                      //设置canvas元素的尺寸为浏览器视窗的尺寸
+    cont.fillStyle = "rgba(0,0,0,0.15)";              //设置填充样式
+    cont.strokeWidth = 1;                             //设置描边宽度
+    var Stars = {
+        starArr: [],                                  //定义星团数组
+        drawStar: function(cxt, x, y, r) {
+                                                      //cxt为传入的画布对象，(x,y)为星星的圆心坐标，r为星星的半径
+            cxt.beginPath();                          //创建路径
+            cxt.arc(x, y, r, 0, 2 * Math.PI);         //画一个圆
+            cxt.closePath();                          //闭合路径
+            cxt.fill();                               //填充
+            return {
+                x: x,
+                y: y,
+                r: r
+            };
+                                                      //返回圆心坐标的对象
+        },
+        drawLine: function(cxt, x, y, ex, ey, o) {
+                                                      //(x,y),(ex,ey)分别为线段的起点和终点坐标,o为透明度
+            cxt.beginPath();
+            cxt.strokeStyle = 'rgba(0,0,0,' + o + ')';//为线段定义描边样式
+            cxt.moveTo(x, y);
+            cxt.lineTo(ex, ey);
+            cxt.closePath();
+            cxt.stroke();                             //描边
+        },
+        randomNum: function(max, min) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+                                                      //完成基本的产生范围内随机数的要求
+        },
+        linkStar: function() {
+            var pStars = this;                        //创建指针指向调用该方法的Stars对象
+            for (let i = 0; i < amount; i++) {
+                for (let j = 0; j < amount && i + j < amount; j++) {
+                    var xx = Math.abs(pStars.starArr[i + j].x - pStars.starArr[i].x),
+                        yy = Math.abs(pStars.starArr[i + j].y - pStars.starArr[i].y),
+                        line = Math.sqrt(xx * xx, yy * yy),
+                        o = 1 / line * 7 - 0.009;
+                    o = o > 0.05 ? 0.05 : o;
+                    pStars.drawLine(cont,
+                        pStars.starArr[i + j].x, pStars.starArr[i + j].y,
+                        pStars.starArr[i].x, pStars.starArr[i].y, o)
+                }
+            }
+        },
+        initStars: function(cont) {
+            var pStars = this;
+            pStars.starArr = [];                      //初始化为空数组
+            cont.clearRect(0, 0, cs.width, cs.height);//顺手清理画布
+            for (let i = 0; i < amount; i++) {
+                pStars.starArr.push(pStars.drawStar(cont, pStars.randomNum(width, 0), pStars.randomNum(height, 0), pStars.randomNum(2, 15)));
+                                                      //返回对象{x:x,y:y}到starArr
+            }
+            pStars.linkStar();                        //连线
+        },
+        moveStars: function() {
+            var pStars = this;
+            for (let i = 0; i < amount; i++) {
+                pStars.starArr[i].moveX = pStars.randomNum(10, -10) / 40;
+                pStars.starArr[i].moveY = pStars.randomNum(10, -10) / 40;
+            }
+            setInterval(function() {
+                cont.clearRect(0, 0, cs.width, cs.height);
+                for (let i = amount - 1; i >= 0; i--) {
+                    var star = this.Stars.starArr[i];
+                    star.x += star.moveX;
+                    star.y += star.moveY;
+                                                      //完成偏移
+                    star.x < 0 ? (star.x = cs.width) : (star.x > cs.width ? star.x = 0 : '');
+                    star.y < 0 ? (star.y = cs.height) : (star.y > cs.height ? star.y = 0 : '');
+                    Stars.drawStar(cont, star.x, star.y, star.r);
+                }
+                Stars.linkStar();
+            }, 50);
+        }
+    }
+    window.onload = function() {
+        Stars.initStars(cont);
+        Stars.moveStars();
+    }
+    </script>
+</body>
+</html>

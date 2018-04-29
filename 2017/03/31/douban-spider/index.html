@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Node.js,async,异步流程控制,爬虫," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本篇介绍Node.js实现爬虫抓取豆瓣图书信息，详细讲解Node.js爬虫的异步流程和并发控制。">
+<meta name="keywords" content="Node.js,async,异步流程控制,爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js实现爬虫异步抓取豆瓣图书信息">
+<meta property="og:url" content="http://ghoskno.github.io/2017/03/31/douban-spider/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="本篇介绍Node.js实现爬虫抓取豆瓣图书信息，详细讲解Node.js爬虫的异步流程和并发控制。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/spider/douban/douban-2.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/spider/douban/douban-3.png">
+<meta property="og:updated_time" content="2018-04-23T03:55:49.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js实现爬虫异步抓取豆瓣图书信息">
+<meta name="twitter:description" content="本篇介绍Node.js实现爬虫抓取豆瓣图书信息，详细讲解Node.js爬虫的异步流程和并发控制。">
+<meta name="twitter:image" content="http://ock1p2k5t.bkt.clouddn.com/spider/douban/douban-2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2017/03/31/douban-spider/"/>
+
+
+
+
+
+  <title>Node.js实现爬虫异步抓取豆瓣图书信息 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2017/03/31/douban-spider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Node.js实现爬虫异步抓取豆瓣图书信息</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-31T13:48:06+08:00">
+                2017-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/小白散步日常/" itemprop="url" rel="index">
+                    <span itemprop="name">小白散步日常</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇介绍Node.js实现爬虫抓取豆瓣图书信息，详细讲解Node.js爬虫的异步流程和并发控制。</p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一个必然的机会，这学期有一个数据结构课设，要用Java实现一个有一定数据处理能力的模拟图书管系统。<br>既然要求了数据处理能力，那数据量自然不能太少，如果自己随机生成一堆abcd的数据又显得比较low，用<strong>Node.js</strong>写一个爬虫抓取豆瓣上图书信息这个想法咻的一下就出现啦～<br>最后实现的过程有一点点曲折，没一开始咻的那一下想的那么简单hh<br>先把要用到的依赖包简单介绍下</p>
+<ul>
+<li><p><code>async</code></p>
+<blockquote>
+<p>Async是一个为处理异步Js提供简单、直接、强大功能的实用模块</p>
+</blockquote>
+<p>本文中用到async来处理一组多个链接的内容抓取，处理异步集合流程和并发控制</p>
+</li>
+<li><p><code>superagent</code><br>nodejs里一个非常方便的客户端请求代理模块，非常流行，操作也简单</p>
+</li>
+<li><code>superagent-proxy</code><br>一段时间内高频率请求豆瓣页面会被封IP的。。。gg<br>这个时候就需要使用IP代理通过变换IP来怼回去，<code>superagent-proxy</code>就是这么一个加载代理的Node.js模块</li>
+<li><code>cheerio</code><br>用来将返回上下文转化为可用jQuery操作的模块，包括 jQuery 核心的子集，从jQuery库中去除了所有 DOM不一致性和浏览器尴尬的部分</li>
+<li><code>eventproxy</code><br>利用事件驱动机制解耦复杂异步逻辑，提升异步协作场景的执行效率。简单说作用就是优雅地处理异步事件流</li>
+</ul>
+<p><strong>篇幅原因，本篇着重讲解爬虫的具体实现和个别依赖包的个别API使用  すみません</strong></p>
+<h2 id="正文开始"><a href="#正文开始" class="headerlink" title="正文开始"></a>正文开始</h2><h3 id="分析豆瓣页面结构"><a href="#分析豆瓣页面结构" class="headerlink" title="分析豆瓣页面结构"></a>分析豆瓣页面结构</h3><p>因为课设对数据的需求仅限于<strong>书名、作者、出版社、类别和简介</strong>，所以分析了一下之后很容易就找到了方便爬的页面<br><img src="http://ock1p2k5t.bkt.clouddn.com/spider/douban/douban-2.png" alt="豆瓣图书页面"><br><img src="http://ock1p2k5t.bkt.clouddn.com/spider/douban/douban-3.png" alt="豆瓣图书页面"></p>
+<p>找到要抓取的目标后，因为本文使用的是<code>cheerio</code>，所以我们通过jQuery的选取元素方式来获取元素。这里可以用Chrome浏览器来获取页面元素的<code>selector</code>。具体操作是，<strong>右键检查元素–&gt;Copy–&gt;Copy selector</strong>。<br>当然Chrome开发者工具也有<code>Copy XPath</code>的功能，如果喜欢用XPath的话也是可以的，解析Xpath也有相应的模块，这里就不赘述了</p>
+<h3 id="引入模块和定义相应变量"><a href="#引入模块和定义相应变量" class="headerlink" title="引入模块和定义相应变量"></a>引入模块和定义相应变量</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="built_in">require</span>(<span class="string">"superagent"</span>),</span><br><span class="line">  <span class="keyword">async</span> = <span class="built_in">require</span>(<span class="string">'async'</span>),</span><br><span class="line">    eventproxy = <span class="built_in">require</span>(<span class="string">'eventproxy'</span>),</span><br><span class="line">    cheerio = <span class="built_in">require</span>(<span class="string">"cheerio"</span>);</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">"superagent-proxy"</span>)(request);</span><br><span class="line"><span class="keyword">const</span> ep = <span class="keyword">new</span> eventproxy();</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//抓取分类区块和保存文件名数组的设置</span></span><br><span class="line"><span class="keyword">var</span> blockCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> blockName = [<span class="string">'literature'</span>, <span class="string">'popular'</span>, <span class="string">'culture'</span>, <span class="string">'life'</span>, <span class="string">'management'</span>, <span class="string">'technology'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> doubanTagUrl = <span class="string">'https://book.douban.com/tag/'</span>;</span><br><span class="line"><span class="keyword">var</span> TagPageUrl = [],           <span class="comment">//存放大分类下每个小分类的连接</span></span><br><span class="line">  filteredTagPageUrl = [],     <span class="comment">//存放过滤后能成功访问的小分类链接</span></span><br><span class="line">  catchData = [];              <span class="comment">//存放对每个大分类抓取到的数据</span></span><br><span class="line"><span class="keyword">var</span> blockrow,                  <span class="comment">//记录大分类下小分类的行数</span></span><br><span class="line">  $TagPage;                    <span class="comment">// 存放/tag页面的res.text</span></span><br></pre></td></tr></table></figure>
+<p><code>blockCount</code>和<code>blockName</code>分别是计数和存放豆瓣页面下不同大类图书的变量</p>
+<h3 id="抓取标签页内容"><a href="#抓取标签页内容" class="headerlink" title="抓取标签页内容"></a>抓取标签页内容</h3><p>在上代码之前，把存在的问题说一下，由于豆瓣会对短时间内频繁访问豆瓣的IP封锁一天，小白博主在找不到较好的办法和不想拖慢爬虫速度的情况下决定<strong>破财免灾</strong><br>找到了一个比较好用的IP代理服务：<a href="https://www.abuyun.com/" target="_blank" rel="noopener">阿布云</a>  按小时买代理服务，好用不贵～</p>
+<p>需要引入的<code>superagent-proxy</code>模块和设置代理如下<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代理隧道验证信息</span></span><br><span class="line">  <span class="keyword">const</span> proxyHost = <span class="string">"proxy.abuyun.com"</span>;</span><br><span class="line">  <span class="keyword">const</span> proxyPort = <span class="number">9010</span>;</span><br><span class="line">  <span class="keyword">const</span> proxyUser = <span class="string">"abcdefghijklmnop"</span>;</span><br><span class="line">  <span class="keyword">const</span> proxyPass = <span class="string">"123456789abcdefg"</span>;</span><br><span class="line">  <span class="keyword">const</span> proxyUrl = <span class="string">"http://"</span> + proxyUser + <span class="string">":"</span> + proxyPass + <span class="string">"@"</span> + proxyHost + <span class="string">":"</span> + proxyPort;</span><br></pre></td></tr></table></figure></p>
+<p>具体的<code>proxyPort</code>还得看买的服务是什么类型啦，官网文档写的还是挺清楚的</p>
+<h4 id="superagent"><a href="#superagent" class="headerlink" title="superagent"></a>superagent</h4><p>接下来就是实际抓取的函数了，简单说一下<code>superagent</code>的用法<br>一个请求的初始化可以用请求对象里合适的方法来执行，然后调用end()来发送请求,下面是一个简单的get请求<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="built_in">require</span>(<span class="string">"superagent"</span>);</span><br><span class="line"><span class="keyword">const</span> url = <span class="string">'xxx'</span>;</span><br><span class="line">request.get(url).end(<span class="function"><span class="keyword">function</span>(<span class="params">err,res</span>)</span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 处理返回res</span></span><br><span class="line"><span class="comment">  **/</span></span><br><span class="line">&#125;)；</span><br></pre></td></tr></table></figure></p>
+<p>所以我们只要在<code>.end( )</code>里加上处理的函数即可 </p>
+<p><strong>完整抓取标签页内容代码</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 获取豆瓣分类浏览页面</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">var</span> getDoubanPage = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    request.get(doubanTagUrl).proxy(proxyUrl).end(<span class="function"><span class="keyword">function</span>(<span class="params">err, res</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err)</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'访问豆瓣失败，检查IP封锁！'</span>);</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        $TagPage = cheerio.load(res.text);</span><br><span class="line">        getFilteredTagUrl($TagPage);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="获取小分类的标签链接"><a href="#获取小分类的标签链接" class="headerlink" title="获取小分类的标签链接"></a>获取小分类的标签链接</h3><p>简单分析html结构后，我想出的比较简单的方法是对每一个大分类遍历内部所有小分类，逐次抓取大分类并写入不同文件。<br>处理的过程中，发现的一个问题是，有些小分类链接访问失败，有一定随机性，应该是<strong>玄学问题</strong>，所以要加上一个过滤链接的函数，如下<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 获取过滤后可访问的小分类链接</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">var</span> getFilteredTagUrl = <span class="function"><span class="keyword">function</span>(<span class="params">$</span>) </span>&#123;</span><br><span class="line">    blockrow = <span class="built_in">parseInt</span>($(<span class="string">'#content &gt; div &gt; div.article &gt; div:nth-child(2) &gt; div:nth-child('</span> + blockCount + <span class="number">1</span> + <span class="string">') &gt; table td'</span>).length / <span class="number">4</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= blockrow; i++) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">1</span>; j &lt;= <span class="number">4</span>; j++) &#123;</span><br><span class="line">        TagPageUrl.push(<span class="string">'https://book.douban.com'</span> + $(<span class="string">'#content &gt; div &gt; div.article &gt; div:nth-child(2) &gt; div:nth-child('</span> + blockCount + <span class="number">1</span> + <span class="string">') &gt; table &gt; tbody &gt; tr:nth-child('</span> + i + <span class="string">') &gt; td:nth-child('</span> + j + <span class="string">') &gt; a'</span>).attr(<span class="string">'href'</span>));</span><br><span class="line">        ep.emit(<span class="string">'getUrl'</span>, TagPageUrl[TagPageUrl.length - <span class="number">1</span>]);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 获取小类链接后</span></span><br><span class="line"><span class="comment">         * 为'getUrl'事件计数器计数</span></span><br><span class="line"><span class="comment">         **/</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 'getUrl'事件达到指定次数，即一获得当前分类下所有小分类链接</span></span><br><span class="line"><span class="comment">     * 对小类链接进行确认并处理</span></span><br><span class="line"><span class="comment">     * 注册'checkUrl'事件，当所有小类链接确认后，开始收集图书信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ep.after(<span class="string">'getUrl'</span>, blockrow * <span class="number">4</span>, <span class="function"><span class="keyword">function</span>(<span class="params">list</span>) </span>&#123;</span><br><span class="line">      TagPageUrl.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">el, index</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(el);</span><br><span class="line">        request.get(<span class="built_in">encodeURI</span>(el)).proxy(proxyUrl).end(<span class="function"><span class="keyword">function</span>(<span class="params">err, res</span>) </span>&#123;</span><br><span class="line">          ep.emit(<span class="string">'checkUrl'</span>, el); <span class="comment">//为'checkUrl'事件计数器计数</span></span><br><span class="line">          <span class="keyword">if</span> (err)</span><br><span class="line">            <span class="built_in">console</span>.error(el);</span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;= <span class="number">200</span>; i++) &#123; <span class="comment">//获取前两百页内容</span></span><br><span class="line">              filteredTagPageUrl.push(el + <span class="string">'?start='</span> + i * <span class="number">20</span> + <span class="string">'&amp;type=T'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="comment">//所有'checkUrl'事件结束后，开始收集信息</span></span><br><span class="line">      ep.after(<span class="string">'checkUrl'</span>, blockrow * <span class="number">4</span>, getbookstart);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这一段代码要注意的地方比较多，以下逐一说明</p>
+<ol>
+<li>观察链接小标签url后会发现，链接是带中文的，在浏览器里访问链接会被浏览器自动解析为<strong>百分号编码</strong>的通用地址，但是在Node.js爬虫里，我们需要手动做这件事，所以在传入url前要先进行编码，使用JavaScript提供的<code>encodeURI()</code>方法即可</li>
+<li><strong>使用<code>eventproxy</code>进行事件流程控制</strong><br>这里用一个没什么卵用的例子来说明<ul>
+<li>代码中<code>getFilteredTagUrl</code>函数内部的<code>ep.emit(&#39;getUrl&#39;, TagPageUrl[TagPageUrl.length - 1]);</code>简单理解就是为<code>getUrl</code>事件的计数器加一，并将<code>TagPageUrl[TagPageUrl.length - 1]</code>传入事件计数器数组，可将数组作为参数传递给事件结束调用的回调函数</li>
+<li><code>ep.after(&#39;getUrl&#39;, blockrow * 4, function(list){...})</code>简单理解就是<code>ep.after(event, num, handle)</code>中，<code>after</code>方法注册事的件<code>event</code>执行次数达到传入参数<code>num</code>后，调用回调函数<code>handle</code>处理结果</li>
+<li>虽然在现在的例子中没有什么卵用，同步执行下顺序操作即可，但是我们也能很容易想到<code>eventproxy</code>事件代理的使用场景：<strong>发送请求后异步操作回调</strong></li>
+<li>所以当确认链接有效的请求发送后，通过一定次数的触发事件代理的回调函数进入下一步页面抓取，在代码的最后几行，<code>ep.after(&#39;checkUrl&#39;, blockrow * 4, getBookStart)</code>即是当所有小分类链接确认操作完成后，对每一页图书信息进行抓取</li>
+</ul>
+</li>
+<li>这里好像没什么好说的了，但是得凑出个第三点来，不如你门好好看看<strong>eventproxy</strong>的文档吧</li>
+</ol>
+<h3 id="抓取图书信息"><a href="#抓取图书信息" class="headerlink" title="抓取图书信息"></a>抓取图书信息</h3><p>先说明一下<code>async</code>的用法和主要用途</p>
+<ul>
+<li>使用async限制并发访问数量，控制异步流程</li>
+<li><code>mapLimit</code>定义<blockquote>
+<p>mapLimit(collection, limit, iteratee(item,callback), callback(err, results))</p>
+</blockquote>
+</li>
+<li><code>collection</code>为要操作的元素集合,<code>limit</code>为并发数量</li>
+<li><p><code>iteratee</code>为操作集合内元素的迭代器，接受参数分别为<code>item</code>和<code>callback</code>,接下来我们看一下官方文档的描述</p>
+<blockquote>
+<p><strong>iteratee</strong> - function - A function to apply to each item in coll. The iteratee is passed a callback(err, transformed) which must be called once it has completed with an error (which can be null) and a transformed item. Invoked with (item, callback).</p>
+</blockquote>
+<p>翻译一下，意思就是，迭代器参数列表中必须有<code>callback</code>，这个<code>callback</code>接受的参数为<code>(err,transformed)</code>,<strong>在每个元素迭代操作完成后都会调用</strong>，用于将<code>transformed</code>传递给<code>results</code>，所有迭代器完成后，<code>results</code>会被传递给<code>callback</code>（mapLimit的最后一个参数）</p>
+</li>
+<li><p>接受的<code>callback</code>为可选参数，会在所有迭代器完成后执行</p>
+</li>
+</ul>
+<p>理解了这些，下面的代码就很容易理解了<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> getBookStart = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'filteredTagPageUrl:'</span> + filteredTagPageUrl.length);</span><br><span class="line">    <span class="comment">//利用async.mapLimit指定并发数量，调用catchBook获取书本信息</span></span><br><span class="line">    <span class="keyword">async</span>.mapLimit(filteredTagPageUrl, <span class="number">5</span>, <span class="function"><span class="keyword">function</span>(<span class="params">el, callback</span>) </span>&#123; catchBook(el, callback); &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err,results</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"complete!"</span>);</span><br><span class="line">      <span class="comment">//所有页面采集任务结束后，等待500ms后将数据写入文件</span></span><br><span class="line">      setTimeout(WriteFile, <span class="number">500</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * [catchBook]</span></span><br><span class="line"><span class="comment">   * @param  &#123;String&#125;   el       [页面url]</span></span><br><span class="line"><span class="comment">   * @param  &#123;Function&#125; callback [mapLimit回调触发]</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">var</span> catchBook = <span class="function"><span class="keyword">function</span>(<span class="params">el, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> delay = <span class="built_in">parseInt</span>((<span class="built_in">Math</span>.random() * <span class="number">30000000</span>) % <span class="number">1000</span>, <span class="number">10</span>); <span class="comment">//设置延迟时长，模拟人为操作</span></span><br><span class="line">    request.get(<span class="built_in">encodeURI</span>(el)).proxy(proxyUrl).end(<span class="function"><span class="keyword">function</span>(<span class="params">err, res</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err)</span><br><span class="line">        <span class="built_in">console</span>.error(<span class="string">'无效链接'</span>);</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> $ = cheerio.load(res.text);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">20</span>; i++) &#123; <span class="comment">//对每页的二十本书进行内容抓取</span></span><br><span class="line">          <span class="keyword">var</span> bookOP;</span><br><span class="line">          <span class="comment">/**    </span></span><br><span class="line"><span class="comment">            * 利用正则表达式处理抓取信息，这里不赘述</span></span><br><span class="line"><span class="comment">            * 欢迎查看github上的源码</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">          catchData.push(bookOP);            </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">//触发mapLimit回调</span></span><br><span class="line">      callback(<span class="literal">null</span>, el);</span><br><span class="line">    &#125;, delay);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * [WriteFile 写入文件]</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">var</span> WriteFile = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    fs.writeFile(<span class="string">'./data/'</span> + blockName[blockCount] + <span class="string">'.txt'</span>, catchData, (err) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(blockName[blockCount] + <span class="string">' is saved!'</span>);</span><br><span class="line">        <span class="keyword">if</span> (blockCount + <span class="number">1</span> &lt; blockName.length) &#123;</span><br><span class="line">          <span class="comment">//读取下一大类</span></span><br><span class="line">          setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            blockCount++;</span><br><span class="line">            TagPageUrl = [];</span><br><span class="line">            filteredTagPageUrl = [];</span><br><span class="line">            catchData = [];</span><br><span class="line">            getFilteredTagUrl();</span><br><span class="line">          &#125;, <span class="number">3500</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后的读写文件操作比较简单，也不进行赘述啦～</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>没什么好结语的啦，可把我累坏了<br>欢迎follow我的<a href="https://github.com/GhosKno" target="_blank" rel="noopener">github</a>hhh（虽然没啥东西）</p>
+<h3 id="相关资料及工具链接"><a href="#相关资料及工具链接" class="headerlink" title="相关资料及工具链接"></a>相关资料及工具链接</h3><ul>
+<li><a href="https://github.com/GhosKno/Node.js-douban-spider" target="_blank" rel="noopener">github地址</a></li>
+<li><a href="https://cnodejs.org/topic/5378720ed6e2d16149fa16bd" target="_blank" rel="noopener">SuperAgent中文使用文档</a></li>
+<li><a href="http://caolan.github.io/async/" target="_blank" rel="noopener">async官方文档</a></li>
+<li><a href="https://cnodejs.org/topic/56f6588387688ffc6e356e87" target="_blank" rel="noopener">一张图学会使用Async组件进行异步流程控制</a></li>
+<li><a href="https://github.com/TooTallNate/superagent-proxy" target="_blank" rel="noopener">superagent-proxy github地址</a></li>
+<li><a href="https://cnodejs.org/topic/5203a71844e76d216a727d2e" target="_blank" rel="noopener">通读cheerio API</a></li>
+<li><a href="https://www.abuyun.com/" target="_blank" rel="noopener">IP代理阿布云官网</a></li>
+<li><a href="https://www.npmjs.com/package/eventproxy" target="_blank" rel="noopener">eventproxy官方文档</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+          
+            <a href="/tags/async/" rel="tag"># async</a>
+          
+            <a href="/tags/异步流程控制/" rel="tag"># 异步流程控制</a>
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/21/balabala/" rel="next" title="balabala">
+                <i class="fa fa-chevron-left"></i> balabala
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/03/promise/" rel="prev" title="Promise简单实现原理">
+                Promise简单实现原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文开始"><span class="nav-number">2.</span> <span class="nav-text">正文开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分析豆瓣页面结构"><span class="nav-number">2.1.</span> <span class="nav-text">分析豆瓣页面结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入模块和定义相应变量"><span class="nav-number">2.2.</span> <span class="nav-text">引入模块和定义相应变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抓取标签页内容"><span class="nav-number">2.3.</span> <span class="nav-text">抓取标签页内容</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#superagent"><span class="nav-number">2.3.1.</span> <span class="nav-text">superagent</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取小分类的标签链接"><span class="nav-number">2.4.</span> <span class="nav-text">获取小分类的标签链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抓取图书信息"><span class="nav-number">2.5.</span> <span class="nav-text">抓取图书信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关资料及工具链接"><span class="nav-number">3.1.</span> <span class="nav-text">相关资料及工具链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

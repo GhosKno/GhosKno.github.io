@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="异步流程控制,JavaScript,js异步编程," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近看了几篇讲解Js实现Promise的原理的文章，弄懂了以前没懂的一些东西，今天也稍稍整理一下">
+<meta name="keywords" content="异步流程控制,JavaScript,js异步编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Promise简单实现原理">
+<meta property="og:url" content="http://ghoskno.github.io/2017/04/03/promise/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="最近看了几篇讲解Js实现Promise的原理的文章，弄懂了以前没懂的一些东西，今天也稍稍整理一下">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://tech.meituan.com/img/promise-series-simple-flow.png">
+<meta property="og:image" content="http://tech.meituan.com/img/promise-series-flow.png">
+<meta property="og:updated_time" content="2018-04-23T03:55:49.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Promise简单实现原理">
+<meta name="twitter:description" content="最近看了几篇讲解Js实现Promise的原理的文章，弄懂了以前没懂的一些东西，今天也稍稍整理一下">
+<meta name="twitter:image" content="http://tech.meituan.com/img/promise-series-simple-flow.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2017/04/03/promise/"/>
+
+
+
+
+
+  <title>Promise简单实现原理 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2017/04/03/promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Promise简单实现原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-03T17:22:22+08:00">
+                2017-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS随笔/" itemprop="url" rel="index">
+                    <span itemprop="name">JS随笔</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看了几篇讲解Js实现Promise的原理的文章，弄懂了以前没懂的一些东西，今天也稍稍整理一下</p>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不是很懂怎么写前言，Fork（<del>抄袭</del>）一段好了</p>
+<blockquote>
+<p>随着浏览器端异步操作复杂程度的日益增加，以及以 Evented I/O 为核心思想的 NodeJS 的持续火爆，Promise、Async 等异步操作封装由于解决了异步编程上面临的诸多挑战，得到了越来越广泛的应用。本文旨在剖析 Promise 的内部机制，从实现原理层面<del>深入</del>(点到为止地)探讨<br>    — 美团点评技术团队 spring</p>
+</blockquote>
+<p>本文的参考资料是</p>
+<ul>
+<li><a href="http://tech.meituan.com/promise-insight.html" target="_blank" rel="noopener">剖析 Promise 之基础篇</a></li>
+<li><a href="http://promisesaplus.com/" target="_blank" rel="noopener">Promise/A+</a></li>
+</ul>
+<p>尤其是<a href="http://tech.meituan.com/promise-insight.html" target="_blank" rel="noopener">剖析 Promise 之基础篇</a>，希望大家阅读本文之前先看看这篇文章。本文的叙述模式主要是讲解上文中的小细节和个人整理，适合对Promise不大理解的<strong>小白</strong>食用。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h3><p>先贴一段引文中promise基础实现的代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*********  例1  ***********/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUserId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 异步请求</span></span><br><span class="line">        Y.io(<span class="string">'/userid'</span>, &#123;</span><br><span class="line">            on: &#123;</span><br><span class="line">                success: <span class="function"><span class="keyword">function</span> (<span class="params">id, res</span>) </span>&#123;</span><br><span class="line">                    resolve(<span class="built_in">JSON</span>.parse(res).id);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getUserId().then(<span class="function"><span class="keyword">function</span> (<span class="params">id</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do sth with id</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*********  promise基础实现  ***********/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Promise</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = <span class="literal">null</span>,</span><br><span class="line">        deferreds = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled</span>) </span>&#123;</span><br><span class="line">        deferreds.push(onFulfilled);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">        deferreds.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">deferred</span>) </span>&#123;</span><br><span class="line">            deferred(value);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn(resolve);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>引文中例一的代码对于对promise了解不多的同学来说，可能看的云里雾里，所以我把对应的promise实现贴在一起，方便讲解。</p>
+<ol>
+<li><code>getUserId</code>方法被调用后，返回一个<code>Promise</code>对象，而在<code>getUserId</code>方法中返回的<code>Promise</code>接收了一个<code>function参数</code>，这个传入的方法内部会执行<code>getUserId</code>方法需要执行的主体功能，如例一中的IO操作。</li>
+<li>当<code>getUserId</code>的主体功能完成后，需要触发下一步的函数，可以看到<code>success</code>状态后，执行<code>resolve</code>方法，传入相应参数即用户ID，完成触发。</li>
+<li>这里可能就会有人对<code>resolve</code>方法有些疑惑，觉得这个函数出现的有点突然。其实上一条已经从功能上简单叙述了<code>resolve</code>方法的作用，要理解<code>resolve</code>具体的作用原理我们需要看看<code>Promise</code>对象的实现代码。<code>Promise</code>对象接受一个参数<code>fn</code>，这个<code>fn</code>便是例一中用于实现<code>getUserId</code>的主体功能的代码。跳到<code>Promise</code>实现的最后一行，我们可以看到，创建<code>Promise</code>对象的时候，会以<strong>回调函数的形式</strong>调用传入方法<code>fn</code>，而<code>fn</code>的参数就是<code>Promise</code>对象内部的方法<code>resolve</code>。至此<code>resolve</code>方法的来源已经秦楚了：<strong>resolve是Promise对象的内部方法，功能是触发下一步执行</strong>。</li>
+<li><code>Promise</code>对象中<code>deferreds</code>可以简单看做<strong>需要异步操作顺序执行的方法队列</strong>。继续看<code>Promise</code>对象中<code>resolve</code>方法的具体实现。假设情景是<code>getUserId</code>中IO操作完成，调用<code>resolve</code>方法，此时resolve方法接受<code>参数value</code>并将回调函数队列一一执行。读者很容易就可以发现，如果只执行<code>getUserId()</code>，那么执行<code>resolve</code>触发时，回调队列是空的，没有函数被调用。</li>
+<li>接着看<code>Promise</code>对象的<code>then</code>方法，接受一个方法参数<code>onFulfilled</code>，将该函数加入回调队列尾。到这里我们就把最基础的Promise实现全都连上了：调用<code>getUserId</code> –&gt; 以回调函数形式传入匿名函数 –&gt;  调用回调函数IO操作（异步代码加入事件队列尾） –&gt; 返回<code>Promise</code>对象 –&gt; 执行<code>then</code>方法 –&gt; 将IO完成后需要执行的函数加入队列尾 –&gt; IO结束，执行<code>resolve</code>触发 –&gt; 执行<code>deferreds</code>队列中的方法</li>
+</ol>
+<p>这就是Promise最基础的实现方式，虽然简单，但是已经将最基本的代码思路给出来了，后续的升级版本也是在这个基础上完善。<br>例如想要传入在一个异步操作执行完成后，执行多个同步方法，只需要稍稍修改<code>then</code>方法就可以达到目的<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled</span>) </span>&#123;</span><br><span class="line">    deferreds.push(onFulfilled);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="增加延时"><a href="#增加延时" class="headerlink" title="增加延时"></a>增加延时</h3><p>从之前的叙述可以知道，如果<code>Promise</code>中传入的方法是同步代码，那么执行<code>resolve</code>时<code>then</code>方法还没被调用，<strong>这时回调队列其实是空的</strong>，而且接下来用<code>then</code>方法注册的回调函数也不会再被调用。，读者可以将下面的代码写入Js解释环境进行验证<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fakePromise</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = <span class="literal">null</span>,</span><br><span class="line">        deferreds = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled</span>) </span>&#123;</span><br><span class="line">        deferreds.push(onFulfilled);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">        deferreds.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">deferred</span>) </span>&#123;</span><br><span class="line">            deferred(value);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fn(resolve);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUserId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> fakePromise(<span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserId执行完毕"</span>);</span><br><span class="line">        resolve(<span class="string">"执行回调函数"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getUserId().then(<span class="function"><span class="keyword">function</span> (<span class="params">str</span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(str);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>为此，我们需要认为地确保<code>resolve</code>触发动作在<code>then</code>方法之后执行。通过使用<code>setTimeout</code>将<code>resolve</code>执行事件添加到事件队列尾<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        deferreds.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">deferred</span>) </span>&#123;</span><br><span class="line">            deferred(value);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="引入状态"><a href="#引入状态" class="headerlink" title="引入状态"></a>引入状态</h3><p><em>这一段无话可说</em></p>
+<h3 id="串行Promise"><a href="#串行Promise" class="headerlink" title="串行Promise"></a>串行Promise</h3><p>原文中这一段有点难度，看着有些绕，看了其他几篇文章，最后也没看到明悟，所以这里按博主自己的理解讲。<br><strong>如果将来出了偏颇的话，我是不负责的</strong></p>
+<p>稍加理解就能知道，上面的<code>Promise</code>基本实现的<code>then</code>方法只能接受<strong>同步代码</strong>，而不能在<code>then</code>方法中传入另一个异步方法，要解决这个问题，需要进一步修改<code>Promise</code>对象。<br>这里贴一下引文中为了<strong>衔接当前 promise 和后邻 promise</strong>对<code>Promise</code>对象做的修改</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.then = <span class="function"><span class="keyword">function</span> (<span class="params">onFulfilled</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">        handle(&#123;</span><br><span class="line">            onFulfilled: onFulfilled || <span class="literal">null</span>,</span><br><span class="line">            resolve: resolve</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params">deferred</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (state === <span class="string">'pending'</span>) &#123;</span><br><span class="line">        deferreds.push(deferred);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> ret = deferred.onFulfilled(value);</span><br><span class="line">    deferred.resolve(ret);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">newValue</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (newValue &amp;&amp; (<span class="keyword">typeof</span> newValue === <span class="string">'object'</span> || <span class="keyword">typeof</span> newValue === <span class="string">'function'</span>)) &#123;</span><br><span class="line">        <span class="keyword">var</span> then = newValue.then;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> then === <span class="string">'function'</span>) &#123;</span><br><span class="line">            then.call(newValue, resolve);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    state = <span class="string">'fulfilled'</span>;</span><br><span class="line">    value = newValue;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        deferreds.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">deferred</span>) </span>&#123;</span><br><span class="line">            handle(deferred);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>原文的描述是：</p>
+<blockquote>
+<ul>
+<li>then 方法中，创建了一个新的 Promise 实例，并作为返回值，这类 promise，权且称作 bridge promise。这是串行 Promise 的基础。另外，因为返回类型一致，之前的链式执行仍然被支持；</li>
+<li>handle 方法是当前 promise 的内部方法。这一点很重要，看不懂的童鞋可以去补充下闭包的知识。then 方法传入的形参 onFullfilled，以及创建新 Promise 实例时传入的 resolve 均被压入当前 promise 的 deferreds 队列中。所谓“巧妇难为无米之炊”，而这，正是衔接当前 promise 与后邻 promise 的“米”之所在。</li>
+</ul>
+</blockquote>
+<p>博主当时就是这一段看的有点迷hhh，这里说一下自己的理解。</p>
+<ol>
+<li>对<code>then</code>方法传入一个异步方法用作回调时，此时返回一个新的<code>Promise</code>对象，称作<code>bridge Promise</code>。</li>
+<li><code>then</code>方法返回的<code>bridge Promise</code>的<code>resolve</code>方法和传入形参<code>onFullfilled</code>包装为对象被压入<strong>当前Promise对象</strong>的回调队列。意思就是，当当前<code>Promise</code>异步操作结束后，调用自身的<code>resolve</code>方法，就会通过当前Promise的handle方法执行刚刚生成的<code>bridge Promise</code>传入的<code>onFulilled</code>方法。</li>
+<li>而执行的<code>bridge Promise</code>传入的<code>onFulilled</code>方法即是执行另一个异步操作函数，产生一个新的<code>Promise</code>并等待执行。至此，当前和后邻Promise就衔接上了。<br><img src="http://tech.meituan.com/img/promise-series-simple-flow.png" alt="bridge Promise1"><br><img src="http://tech.meituan.com/img/promise-series-flow.png" alt="bridge Promise2"></li>
+</ol>
+<h3 id="失败处理和异常处理"><a href="#失败处理和异常处理" class="headerlink" title="失败处理和异常处理"></a>失败处理和异常处理</h3><p>这两块如果上面看懂了的话，看看原文的代码应该很快就理解了，这里就不多说了。觉得Promise的前后衔接还是应该是全文最复杂、最难理解的一块了。。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>这篇个人整理就这样啦，有兴趣（<del>没看懂</del>）的读者可以再看看下面的补充资料～</p>
+<ul>
+<li><a href="http://greengerong.com/blog/2015/10/22/promisede-miao-yong/" target="_blank" rel="noopener">Promise的前世今生和妙用技巧</a></li>
+<li><a href="http://bupt-hjm.github.io/2017/03/23/study-promise/" target="_blank" rel="noopener">理解Promise简单实现的背后原理</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/异步流程控制/" rel="tag"># 异步流程控制</a>
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/tags/js异步编程/" rel="tag"># js异步编程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/31/douban-spider/" rel="next" title="Node.js实现爬虫异步抓取豆瓣图书信息">
+                <i class="fa fa-chevron-left"></i> Node.js实现爬虫异步抓取豆瓣图书信息
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/11/roundmatch/" rel="prev" title="分治法实现循环赛算法笔记">
+                分治法实现循环赛算法笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础实现"><span class="nav-number">2.1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加延时"><span class="nav-number">2.2.</span> <span class="nav-text">增加延时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入状态"><span class="nav-number">2.3.</span> <span class="nav-text">引入状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#串行Promise"><span class="nav-number">2.4.</span> <span class="nav-text">串行Promise</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#失败处理和异常处理"><span class="nav-number">2.5.</span> <span class="nav-text">失败处理和异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">2.6.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

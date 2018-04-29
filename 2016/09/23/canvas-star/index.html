@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HTML5,canvas," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本篇将会介绍如何用canvas制作动态随机移动的星图啦啦啦">
+<meta name="keywords" content="HTML5,canvas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML5 canvas制作动态随机星图">
+<meta property="og:url" content="http://ghoskno.github.io/2016/09/23/canvas-star/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="本篇将会介绍如何用canvas制作动态随机移动的星图啦啦啦">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/canvas-starAnima999tion.gif">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%281%29.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%282%29.png">
+<meta property="og:updated_time" content="2018-04-23T03:55:49.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTML5 canvas制作动态随机星图">
+<meta name="twitter:description" content="本篇将会介绍如何用canvas制作动态随机移动的星图啦啦啦">
+<meta name="twitter:image" content="http://ock1p2k5t.bkt.clouddn.com/canvas-starAnima999tion.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2016/09/23/canvas-star/"/>
+
+
+
+
+
+  <title>HTML5 canvas制作动态随机星图 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2016/09/23/canvas-star/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTML5 canvas制作动态随机星图</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-23T18:29:37+08:00">
+                2016-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/小白散步日常/" itemprop="url" rel="index">
+                    <span itemprop="name">小白散步日常</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇将会介绍如何用canvas制作动态随机移动的星图啦啦啦<br><img src="http://ock1p2k5t.bkt.clouddn.com/canvas-starAnima999tion.gif" alt="demo展示图"><br><a id="more"></a></p>
+<blockquote>
+<p>小白在远离小白道路上的第一步就是搭个博客</p>
+</blockquote>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这次的博文不是接着进行博客布置的教学了，对的，我弃坑了，也许以后会回来补<br>用HMTL5+canvas画东西也很好玩嘛，来来来，我们来画那种会随机动来动去的星图。先展示一个demo</p>
+<p>demo访问地址：<a href="https://ghoskno.github.io/demo/canvas-stars">动态星图demo</a></p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>在开始这个动态星图的制作前，我希望你能对canvas和它的常用API有一定的了解，在这里给出一份速成教程，四十分钟到一小时可以看完，初步掌握canvas常用API的使用<br><a href="http://www.cnblogs.com/vajoy/p/3887608.html" target="_blank" rel="noopener">HTML5- Canvas入门（一）</a><br><a href="http://www.cnblogs.com/vajoy/p/3914131.html" target="_blank" rel="noopener">HTML5- Canvas入门（二）</a><br><a href="http://www.cnblogs.com/vajoy/p/3925190.html" target="_blank" rel="noopener">HTML5- Canvas入门（三）</a><br><a href="http://www.cnblogs.com/vajoy/p/3992852.html" target="_blank" rel="noopener">HTML5- Canvas入门（四）</a><br><a href="http://www.cnblogs.com/vajoy/p/3996979.html" target="_blank" rel="noopener">HTML5- Canvas入门（五）</a><br><a href="http://www.cnblogs.com/vajoy/p/4001606.html" target="_blank" rel="noopener">HTML5- Canvas入门（六）</a><br><a href="http://www.cnblogs.com/vajoy/p/4180215.htmll" target="_blank" rel="noopener">HTML5- Canvas入门（七）</a></p>
+<h3 id="这一段就叫它正文好了"><a href="#这一段就叫它正文好了" class="headerlink" title="这一段就叫它正文好了"></a>这一段就叫它正文好了</h3><p>首先建立html文件<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>canvas star demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    body&#123;</span></span><br><span class="line"><span class="undefined">        text-align: center;</span></span><br><span class="line"><span class="undefined">        overflow: hidden;</span></span><br><span class="line"><span class="undefined">        background: #C4C6C8;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">  </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">"mycanvas"</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>因为我假定你已经有基础或者已经看完了我贴在上面的速成教程，这一段代码就不加以赘述了，接下来是js代码的编写</p>
+<h4 id="变量的定义"><a href="#变量的定义" class="headerlink" title="变量的定义"></a>变量的定义</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width = <span class="built_in">window</span>.innerWidth,  </span><br><span class="line">    height = <span class="built_in">window</span>.innerHeight,</span><br><span class="line">                                             <span class="comment">//获取浏览器视窗的尺寸</span></span><br><span class="line">    amount = <span class="number">50</span>;                             <span class="comment">//出现在画布上的星星个数</span></span><br><span class="line"><span class="keyword">var</span> cs = <span class="built_in">document</span>.getElementById(<span class="string">'mycanvas'</span>),<span class="comment">//获得canvas元素</span></span><br><span class="line">    cont = cs.getContext(<span class="string">'2d'</span>);              <span class="comment">//对canvas元素进行2d渲染，此后的对画布操作即对cont的操作</span></span><br><span class="line">cs.width = width;</span><br><span class="line">cs.height = height;</span><br><span class="line">                                             <span class="comment">//设置canvas元素的尺寸为浏览器视窗的尺寸</span></span><br><span class="line">cont.strokeWidth = <span class="number">1</span>;                        <span class="comment">//设置描边宽度</span></span><br></pre></td></tr></table></figure>
+<p>这一段代码设置了基本的样式和尺寸，接下来就是着手制作星团了</p>
+<h4 id="星团对象的定义"><a href="#星团对象的定义" class="headerlink" title="星团对象的定义"></a>星团对象的定义</h4><p>要完成星团对象的定义，我们可以先对想要达到的效果进行逐步分析、拆解，再对其内部属性和方法进行不断完善</p>
+<ol>
+<li>先做一个不会动的星团，星团里的所有星星需要一个数组来存储，数组里存储的应该是星星的圆心坐标</li>
+<li>需要有一个画星星的方法，就命名为<code>drawStar</code>好了</li>
+<li>在demo里看到每个星星都连着其他星星，好带感，所以需要一个画线的方法，就将画线的方法命名为<code>drawLine</code>，连线的方法命名为<code>linkStar</code>好了</li>
+<li>每个星星的出现的位置应该是随机的，需要一个产生合适随机数的方法，但是这个方法也许不单单用来产生随机位置，还有随机半径等等，所以就钦定为<code>randomNum</code>吧</li>
+<li>这里需要一个方法将上面的几个工具方法组合起来，绘制出完整的星图，不是很会起名了，就叫<code>initStars</code>好了，尽管不是很顺口</li>
+<li>以上几个方法足够产生一个静态的随机星图了，要让它动起来的话，还需要一个能够让星图动起来的方法，对的，<code>moveStars</code></li>
+</ol>
+<p>到这里的话，已经初步将对象里需要的方法和属性定义好了，接下来是一步步地实现</p>
+<h4 id="属性和各工具方法的定义"><a href="#属性和各工具方法的定义" class="headerlink" title="属性和各工具方法的定义"></a>属性和各工具方法的定义</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Stars = &#123;</span><br><span class="line">  starArr: [],                        <span class="comment">//定义星团数组</span></span><br><span class="line">  drawStar: <span class="function"><span class="keyword">function</span>(<span class="params">cxt,x,y,r</span>)</span>&#123;</span><br><span class="line">                                      <span class="comment">//cxt为传入的画布对象，(x,y)为星星的圆心坐标，r为星星的半径</span></span><br><span class="line">    cxt.beginPath();                  <span class="comment">//创建路径</span></span><br><span class="line">    cxt.arc(x,y,r,<span class="number">0</span>,<span class="number">2</span>*<span class="built_in">Math</span>.PI);       <span class="comment">//画一个圆</span></span><br><span class="line">    cxt.closePath();                  <span class="comment">//闭合路径</span></span><br><span class="line">    cxt.fill();                       <span class="comment">//填充</span></span><br><span class="line">    <span class="keyword">return</span>&#123;<span class="attr">x</span>:x,<span class="attr">y</span>:y,<span class="attr">r</span>:r&#125;;              <span class="comment">//返回圆心坐标和半径的对象</span></span><br><span class="line">  &#125;, </span><br><span class="line">  drawLine: <span class="function"><span class="keyword">function</span>(<span class="params">cxt,x,y,ex,ey</span>)</span>&#123;</span><br><span class="line">                                      <span class="comment">//(x,y),(ex,ey)分别为线段的起点和终点坐标</span></span><br><span class="line">    cxt.beginPath();</span><br><span class="line">    cxt.strokeStyle = <span class="string">"rgba(0,0,0,1)"</span>;<span class="comment">//为线段定义描边样式</span></span><br><span class="line">    cxt.moveTo(x,y);  </span><br><span class="line">    cxt.lineTo(ex,ey);</span><br><span class="line">    cxt.closePath();</span><br><span class="line">    cxt.stroke();                     <span class="comment">//描边</span></span><br><span class="line">  &#125;,</span><br><span class="line">  randomNum: <span class="function"><span class="keyword">function</span>(<span class="params">max,min</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*(max-min+<span class="number">1</span>)+min);</span><br><span class="line">                                      <span class="comment">//完成基本的产生范围内随机数的要求</span></span><br><span class="line">  &#125;,</span><br><span class="line">  linkStar: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> pStars = <span class="keyword">this</span>;                <span class="comment">//创建指针指向调用该方法的Stars对象</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; amount;i++)&#123;</span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">let</span> j = <span class="number">0</span>;j &lt; amount &amp;&amp; i+j &lt; amount;j++)&#123;</span><br><span class="line">        pStars.drawLine(cont,</span><br><span class="line">          pStars.starArr[i+j].x,pStars.starArr[i+j].y,</span><br><span class="line">          pStars.starArr[i].x,pStars.starArr[i].y)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这一步，我们已经把<code>Stars</code>对象里需要用到的工具方法的定义工作完成了</p>
+<h4 id="完成星图的静态模型"><a href="#完成星图的静态模型" class="headerlink" title="完成星图的静态模型"></a>完成星图的静态模型</h4><p>到这里，我们再整理一遍这个方法需要完成的功能：组合各个工具函数绘制出静态的星图<br>代码如下<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Stars = &#123;</span><br><span class="line">  ...</span><br><span class="line">  initStars: <span class="function"><span class="keyword">function</span>(<span class="params">cont</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> pStars = <span class="keyword">this</span>;</span><br><span class="line">    pStars.starArr = [];                   <span class="comment">//初始化为空数组</span></span><br><span class="line">    cont.clearRect(<span class="number">0</span>,<span class="number">0</span>,cs.width,cs.height);<span class="comment">//顺手清理画布</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; amount;i++)&#123;</span><br><span class="line">    pStars.starArr.push(pStars.drawStar(cont,</span><br><span class="line">      pStars.randomNum(width,<span class="number">0</span>),           <span class="comment">//随机生成星星的横坐标</span></span><br><span class="line">      pStars.randomNum(height,<span class="number">0</span>),          <span class="comment">//随机生成星星的纵坐标</span></span><br><span class="line">      pStars.randomNum(<span class="number">2</span>,<span class="number">15</span>)               <span class="comment">//随机生成星星的半径</span></span><br><span class="line">      ));</span><br><span class="line">                                           <span class="comment">//返回对象&#123;x:x,y:y,r:r&#125;到starArr</span></span><br><span class="line">    &#125;</span><br><span class="line">    pStars.linkStar();                     <span class="comment">//连线</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>按上述步骤简单组织后，效果如图所示<br><img src="http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%281%29.png" alt="初步效果图"><br>如果你的和我的不一样，那你肯定哪里出问题了。。</p>
+<h4 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h4><p>这个静态星图的效果很惊悚没错。。需要稍微美化一下。。<br>首先，在js代码的头部定义变量处加入<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cont.fillStyle = <span class="string">"rgba(0,0,0,0.05)"</span>;      <span class="comment">//设置填充样式</span></span><br></pre></td></tr></table></figure></p>
+<p>接着，修改线段的颜色深浅，我们希望每条线段有不同的深浅度，最好是和线段的长度存在一定关系</p>
+<ol>
+<li><p>先修改方法<code>drawLine</code>  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">drawLine: <span class="function"><span class="keyword">function</span>(<span class="params">cxt,x,y,ex,ey,o</span>)</span>&#123;</span><br><span class="line">                                       <span class="comment">//(x,y),(ex,ey)分别为线段的起点和终点坐标,o为透明度</span></span><br><span class="line"> cxt.beginPath();</span><br><span class="line"> cxt.strokeStyle = <span class="string">'rgba(0,0,0,'</span>+o+<span class="string">')'</span>;<span class="comment">//为线段定义描边样式</span></span><br><span class="line"> cxt.moveTo(x,y);</span><br><span class="line"> cxt.lineTo(ex,ey);</span><br><span class="line"> cxt.closePath();</span><br><span class="line"> cxt.stroke();                         <span class="comment">//描边</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改方法<code>linkStar</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">linkStar: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> pStars = <span class="keyword">this</span>;                    <span class="comment">//创建指针指向调用该方法的Stars对象</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; amount;i++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> j = <span class="number">0</span>;j &lt; amount &amp;&amp; i+j &lt; amount;j++)&#123;</span><br><span class="line">      <span class="keyword">var</span> xx = <span class="built_in">Math</span>.abs(pStars.starArr[i+j].x - pStars.starArr[i].x),</span><br><span class="line">          yy = <span class="built_in">Math</span>.abs(pStars.starArr[i+j].y - pStars.starArr[i].y),</span><br><span class="line">          line = <span class="built_in">Math</span>.sqrt(xx*xx,yy*yy),</span><br><span class="line">          o = <span class="number">1</span>/line*<span class="number">7</span><span class="number">-0.009</span>;</span><br><span class="line">          o= o &gt; <span class="number">0.05</span> ? <span class="number">0.05</span> :o;</span><br><span class="line">      pStars.drawLine(cont,</span><br><span class="line">        pStars.starArr[i+j].x,pStars.starArr[i+j].y,</span><br><span class="line">        pStars.starArr[i].x,pStars.starArr[i].y,o)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>修改之后，会呈现如下图效果<br><img src="http://ock1p2k5t.bkt.clouddn.com/canvas-star%E4%B8%8B%E8%BD%BD%20%282%29.png" alt="静态效果图"></p>
+<h4 id="完成星图的动态模型"><a href="#完成星图的动态模型" class="headerlink" title="完成星图的动态模型"></a>完成星图的动态模型</h4><p>接下来就是制作动态星图的模型了，要实现canvas的动画效果，普遍的做法是在经过一定时间间隔后进行重绘。如此，一个较为简单且容易想到的思路就出现了，经过初始化后的静态星图模型已经将所有星星的的坐标存放于数组<code>starArr</code>中，只需要在清理画布后，将数组内的坐标加上适当偏移后绘制出来，即可达到想要的动态效果。为此，我们需要在对象数组<code>starArr</code>中为对象添加其他属性<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Stars = &#123;</span><br><span class="line">  ...</span><br><span class="line">  moveStars: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> pStars = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; amount;i++)&#123;</span><br><span class="line">      pStars.starArr[i].moveX = pStars.randomNum(<span class="number">10</span>,<span class="number">-10</span>)/<span class="number">40</span>;</span><br><span class="line">      pStars.starArr[i].moveY = pStars.randomNum(<span class="number">10</span>,<span class="number">-10</span>)/<span class="number">40</span>;     </span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码已经为对象数组中的元素添加了新的属性，即偏移量，接下来就是设置定时器使星图重绘了<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Stars = &#123;</span><br><span class="line">  ...</span><br><span class="line">  moveStars: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      cont.clearRect(<span class="number">0</span>,<span class="number">0</span>,cs.width,cs.height);  <span class="comment">//清理</span></span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">let</span> i = amount - <span class="number">1</span>;i &gt;= <span class="number">0</span>;i--)&#123;</span><br><span class="line">        <span class="keyword">var</span> star = pStars.starArr[i];</span><br><span class="line">        star.x += star.moveX;</span><br><span class="line">        star.y += star.moveY;</span><br><span class="line">        <span class="comment">//完成偏移</span></span><br><span class="line">        star.x &lt; <span class="number">0</span> ? (star.x = cs.width) : (star.x &gt; cs.width ? star.x = <span class="number">0</span> : <span class="string">''</span>);</span><br><span class="line">        star.y &lt; <span class="number">0</span> ? (star.y = cs.height) : (star.y &gt; cs.height ? star.y = <span class="number">0</span> : <span class="string">''</span>);</span><br><span class="line">        Stars.drawStar(cont,star.x,star.y,star.r);</span><br><span class="line">      &#125;</span><br><span class="line">      Stars.linkStar();</span><br><span class="line">    &#125;,<span class="number">50</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>至此，就已经将对象的方法和属性全定义完啦，最后一步就是组织js函数调用这个对象</p>
+<h4 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  Stars.initStars(cont);</span><br><span class="line">  Stars.moveStars();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>组合之后，就能够显示出动态星图的效果啦</p>
+<h4 id="美化二"><a href="#美化二" class="headerlink" title="美化二"></a>美化二</h4><p>本来想做美化的，做成真正星星那样，但是好麻烦啊，先留着坑，有空再做好了(<em>其实后来作者弃坑了，被繁重的学业压垮了脊梁</em>)</p>
+<h4 id="全部代码"><a href="#全部代码" class="headerlink" title="全部代码"></a>全部代码</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;canvas star demo&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">    &lt;style type="text/</span>css<span class="string">"&gt;</span></span><br><span class="line"><span class="string">    body &#123;</span></span><br><span class="line"><span class="string">        text-align: center;</span></span><br><span class="line"><span class="string">        overflow: hidden;</span></span><br><span class="line"><span class="string">        background: #C4C6C8;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    &lt;/style&gt;</span></span><br><span class="line"><span class="string">&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;body&gt;</span></span><br><span class="line"><span class="string">    &lt;canvas id="</span>mycanvas<span class="string">"&gt;&lt;/canvas&gt;</span></span><br><span class="line"><span class="string">    &lt;script type="</span>text/javascript<span class="string">"&gt;</span></span><br><span class="line"><span class="string">    var width = window.innerWidth,</span></span><br><span class="line"><span class="string">        height = window.innerHeight,</span></span><br><span class="line"><span class="string">                                                      //获取浏览器视窗的尺寸</span></span><br><span class="line"><span class="string">        amount = 50;                                  //出现在画布上的星星个数</span></span><br><span class="line"><span class="string">    var cs = document.getElementById('mycanvas'),     //获得canvas元素</span></span><br><span class="line"><span class="string">        cont = cs.getContext('2d');                   //对canvas元素进行2d渲染，此后的对画布操作即对cont的操作</span></span><br><span class="line"><span class="string">    cs.width = width;</span></span><br><span class="line"><span class="string">    cs.height = height;</span></span><br><span class="line"><span class="string">                                                      //设置canvas元素的尺寸为浏览器视窗的尺寸</span></span><br><span class="line"><span class="string">    cont.fillStyle = "</span>rgba(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.15</span>)<span class="string">";              //设置填充样式</span></span><br><span class="line"><span class="string">    cont.strokeWidth = 1;                             //设置描边宽度</span></span><br><span class="line"><span class="string">    var Stars = &#123;</span></span><br><span class="line"><span class="string">        starArr: [],                                  //定义星团数组</span></span><br><span class="line"><span class="string">        drawStar: function(cxt, x, y, r) &#123;</span></span><br><span class="line"><span class="string">                                                      //cxt为传入的画布对象，(x,y)为星星的圆心坐标，r为星星的半径</span></span><br><span class="line"><span class="string">            cxt.beginPath();                          //创建路径</span></span><br><span class="line"><span class="string">            cxt.arc(x, y, r, 0, 2 * Math.PI);         //画一个圆</span></span><br><span class="line"><span class="string">            cxt.closePath();                          //闭合路径</span></span><br><span class="line"><span class="string">            cxt.fill();                               //填充</span></span><br><span class="line"><span class="string">            return &#123;</span></span><br><span class="line"><span class="string">                x: x,</span></span><br><span class="line"><span class="string">                y: y,</span></span><br><span class="line"><span class="string">                r: r</span></span><br><span class="line"><span class="string">            &#125;;</span></span><br><span class="line"><span class="string">                                                      //返回圆心坐标的对象</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        drawLine: function(cxt, x, y, ex, ey, o) &#123;</span></span><br><span class="line"><span class="string">                                                      //(x,y),(ex,ey)分别为线段的起点和终点坐标,o为透明度</span></span><br><span class="line"><span class="string">            cxt.beginPath();</span></span><br><span class="line"><span class="string">            cxt.strokeStyle = 'rgba(0,0,0,' + o + ')';//为线段定义描边样式</span></span><br><span class="line"><span class="string">            cxt.moveTo(x, y);</span></span><br><span class="line"><span class="string">            cxt.lineTo(ex, ey);</span></span><br><span class="line"><span class="string">            cxt.closePath();</span></span><br><span class="line"><span class="string">            cxt.stroke();                             //描边</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        randomNum: function(max, min) &#123;</span></span><br><span class="line"><span class="string">            return Math.floor(Math.random() * (max - min + 1) + min);</span></span><br><span class="line"><span class="string">                                                      //完成基本的产生范围内随机数的要求</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        linkStar: function() &#123;</span></span><br><span class="line"><span class="string">            var pStars = this;                        //创建指针指向调用该方法的Stars对象</span></span><br><span class="line"><span class="string">            for (let i = 0; i &lt; amount; i++) &#123;</span></span><br><span class="line"><span class="string">                for (let j = 0; j &lt; amount &amp;&amp; i + j &lt; amount; j++) &#123;</span></span><br><span class="line"><span class="string">                    var xx = Math.abs(pStars.starArr[i + j].x - pStars.starArr[i].x),</span></span><br><span class="line"><span class="string">                        yy = Math.abs(pStars.starArr[i + j].y - pStars.starArr[i].y),</span></span><br><span class="line"><span class="string">                        line = Math.sqrt(xx * xx, yy * yy),</span></span><br><span class="line"><span class="string">                        o = 1 / line * 7 - 0.009;</span></span><br><span class="line"><span class="string">                    o = o &gt; 0.05 ? 0.05 : o;</span></span><br><span class="line"><span class="string">                    pStars.drawLine(cont,</span></span><br><span class="line"><span class="string">                        pStars.starArr[i + j].x, pStars.starArr[i + j].y,</span></span><br><span class="line"><span class="string">                        pStars.starArr[i].x, pStars.starArr[i].y, o)</span></span><br><span class="line"><span class="string">                &#125;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        initStars: function(cont) &#123;</span></span><br><span class="line"><span class="string">            var pStars = this;</span></span><br><span class="line"><span class="string">            pStars.starArr = [];                      //初始化为空数组</span></span><br><span class="line"><span class="string">            cont.clearRect(0, 0, cs.width, cs.height);//顺手清理画布</span></span><br><span class="line"><span class="string">            for (let i = 0; i &lt; amount; i++) &#123;</span></span><br><span class="line"><span class="string">                pStars.starArr.push(pStars.drawStar(cont, pStars.randomNum(width, 0), pStars.randomNum(height, 0), pStars.randomNum(2, 15)));</span></span><br><span class="line"><span class="string">                                                      //返回对象&#123;x:x,y:y&#125;到starArr</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">            pStars.linkStar();                        //连线</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        moveStars: function() &#123;</span></span><br><span class="line"><span class="string">            var pStars = this;</span></span><br><span class="line"><span class="string">            for (let i = 0; i &lt; amount; i++) &#123;</span></span><br><span class="line"><span class="string">                pStars.starArr[i].moveX = pStars.randomNum(10, -10) / 40;</span></span><br><span class="line"><span class="string">                pStars.starArr[i].moveY = pStars.randomNum(10, -10) / 40;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">            setInterval(function() &#123;</span></span><br><span class="line"><span class="string">                cont.clearRect(0, 0, cs.width, cs.height);</span></span><br><span class="line"><span class="string">                for (let i = amount - 1; i &gt;= 0; i--) &#123;</span></span><br><span class="line"><span class="string">                    var star = this.Stars.starArr[i];</span></span><br><span class="line"><span class="string">                    star.x += star.moveX;</span></span><br><span class="line"><span class="string">                    star.y += star.moveY;</span></span><br><span class="line"><span class="string">                                                      //完成偏移</span></span><br><span class="line"><span class="string">                    star.x &lt; 0 ? (star.x = cs.width) : (star.x &gt; cs.width ? star.x = 0 : '');</span></span><br><span class="line"><span class="string">                    star.y &lt; 0 ? (star.y = cs.height) : (star.y &gt; cs.height ? star.y = 0 : '');</span></span><br><span class="line"><span class="string">                    Stars.drawStar(cont, star.x, star.y, star.r);</span></span><br><span class="line"><span class="string">                &#125;</span></span><br><span class="line"><span class="string">                Stars.linkStar();</span></span><br><span class="line"><span class="string">            &#125;, 50);</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    window.onload = function() &#123;</span></span><br><span class="line"><span class="string">        Stars.initStars(cont);</span></span><br><span class="line"><span class="string">        Stars.moveStars();</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    &lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Achievement</span>(<span class="params"></span>)｛</span></span><br><span class="line"><span class="function">  <span class="title">count</span>: 0;</span></span><br><span class="line"><span class="function">  <span class="title">addBlog</span>: <span class="title">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    count++;</span><br><span class="line">  &#125;</span><br><span class="line">  log: <span class="function"><span class="keyword">function</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(str);</span><br><span class="line">  &#125;</span><br><span class="line">｝</span><br><span class="line"><span class="keyword">var</span> 人生成就 = <span class="keyword">new</span> Achievement();</span><br><span class="line">人生成就.addBlog();</span><br><span class="line">人生成就.log(<span class="string">"前端博客++"</span>);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HTML5/" rel="tag"># HTML5</a>
+          
+            <a href="/tags/canvas/" rel="tag"># canvas</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/20/es6/" rel="prev" title="ES6学习笔记">
+                ES6学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备"><span class="nav-number">2.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#这一段就叫它正文好了"><span class="nav-number">3.</span> <span class="nav-text">这一段就叫它正文好了</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量的定义"><span class="nav-number">3.1.</span> <span class="nav-text">变量的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#星团对象的定义"><span class="nav-number">3.2.</span> <span class="nav-text">星团对象的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#属性和各工具方法的定义"><span class="nav-number">3.3.</span> <span class="nav-text">属性和各工具方法的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完成星图的静态模型"><span class="nav-number">3.4.</span> <span class="nav-text">完成星图的静态模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#美化"><span class="nav-number">3.5.</span> <span class="nav-text">美化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完成星图的动态模型"><span class="nav-number">3.6.</span> <span class="nav-text">完成星图的动态模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用"><span class="nav-number">3.7.</span> <span class="nav-text">调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#美化二"><span class="nav-number">3.8.</span> <span class="nav-text">美化二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全部代码"><span class="nav-number">3.9.</span> <span class="nav-text">全部代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JavaScript,算法设计," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言没有前言，rt 正文上周算法设计课的老师布置了这个作业，完成了之后就打算顺便记录下来，以后也会陆续放一些算法设计课的作业和笔记。">
+<meta name="keywords" content="JavaScript,算法设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分治法实现循环赛算法笔记">
+<meta property="og:url" content="http://ghoskno.github.io/2017/04/11/roundmatch/index.html">
+<meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="前言没有前言，rt 正文上周算法设计课的老师布置了这个作业，完成了之后就打算顺便记录下来，以后也会陆续放一些算法设计课的作业和笔记。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2019-29-02.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2023-29-41.png">
+<meta property="og:image" content="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2023-52-50.png">
+<meta property="og:updated_time" content="2018-04-23T03:55:49.951Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分治法实现循环赛算法笔记">
+<meta name="twitter:description" content="前言没有前言，rt 正文上周算法设计课的老师布置了这个作业，完成了之后就打算顺便记录下来，以后也会陆续放一些算法设计课的作业和笔记。">
+<meta name="twitter:image" content="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2019-29-02.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ghoskno.github.io/2017/04/11/roundmatch/"/>
+
+
+
+
+
+  <title>分治法实现循环赛算法笔记 | 这里该有个GhosKno</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">这里该有个GhosKno</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">猜猜看"GhosKno"什么意思，猜对没奖</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2017/04/11/roundmatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分治法实现循环赛算法笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T18:07:25+08:00">
+                2017-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">算法笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>没有前言，rt</strong></p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>上周算法设计课的老师布置了这个作业，完成了之后就打算顺便记录下来，以后也会陆续放一些算法设计课的作业和笔记。</p>
+<a id="more"></a>
+<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><blockquote>
+<p>设有n个运动员要进行网球循环赛。设计一个满足下列条件的比赛日程表：</p>
+<ul>
+<li>每个选手必须与其他n-1个选手各赛一次</li>
+<li>每个选手一天只能比赛一次</li>
+<li>当n是偶数时，循环赛进行n-1天</li>
+<li>当n是奇数时，循环赛进行n天</li>
+</ul>
+</blockquote>
+<h3 id="简单情况"><a href="#简单情况" class="headerlink" title="简单情况"></a>简单情况</h3><p>这个题目要求n没有限制，其实是有一点难度的，我们可以先考虑一种简单的情况，限制$n=2^k$.<br>这样在进行二分实现的时候，可以均匀划分，然后通过对子问题的解直接复制，可以容易的构造出原问题的解，如图<br><img src="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2019-29-02.png" alt="循环赛示意图"></p>
+<p>容易发现，在$n=2^k$的情况下，将子问题的解直接复制到対角问题就可以直接得到原问题的解。</p>
+<p>进一步理解问题，可以发现，其实对能够直接复制子问题到对角的情况的限制并不是原问题的规模一定满足是2的k次冪，而是<strong>满足原问题与子问题的规模都是偶数</strong>，换句话说，只要原问题能够分割为两个规模大小相等且子问题的规模为偶数，就可以将两个子问题的解通过复制得到原问题的解。 </p>
+<p>还有一个值得注意的地方，当原问题及其子问题均为偶数规模时，两个子问题可以看作<strong>镜像关系</strong>，考虑上图左半部分，将其继续分割为两部分，可以看作原问题[1:8]分解为[1:4]和[5:8]两个子问题，子问题的规模为4,可以通过将子问题[1:4]中的排列，每一位加上4得到另一个子问题的解。姑且将这种关系理解为镜像关系（规模为2n的问题中，i与i+n互为镜像，i&lt;=n）吧。</p>
+<p>先贴上限制情况的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">arrange</span> <span class="params">(<span class="keyword">int</span>**  arr,<span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(len == <span class="number">1</span>)&#123;   <span class="comment">//规模为1，置初值</span></span><br><span class="line">        arr[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    arrange(arr,len / <span class="number">2</span>);</span><br><span class="line">    <span class="comment">//扫描子问题[1:len/2][1:len/2]</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= len/<span class="number">2</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= len / <span class="number">2</span>; j++)&#123; <span class="comment">//完成对镜像问题和对角位置的复制</span></span><br><span class="line">            arr[i][j + len / <span class="number">2</span>] = arr[i + len / <span class="number">2</span>][j] = arr[i][j] + len / <span class="number">2</span>;</span><br><span class="line">            arr[i + len / <span class="number">2</span>][j + len / <span class="number">2</span>] = arr[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"input num of player: "</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; k;</span><br><span class="line">    <span class="keyword">int</span> **arr = <span class="keyword">new</span> <span class="keyword">int</span> *[k + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= k; i++)</span><br><span class="line">        arr[i] = <span class="keyword">new</span> <span class="keyword">int</span>[k + <span class="number">1</span>];</span><br><span class="line">    <span class="built_in">memset</span>(arr, <span class="number">0</span>, <span class="keyword">sizeof</span>(arr));</span><br><span class="line">    arrange(arr, k);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= k; i++)&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= k;j++)&#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; arr[i][j];</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; (j == <span class="number">1</span> ? <span class="string">": "</span> : <span class="string">" "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这段代码要求传入<strong>原问题规模严格为2的n次冪</strong>，否则程序应该很可能大概率会崩掉，不过不重要不重要。。<br>经过上面的分析，理解这段代码应该是没有太大问题的，这里就不过多赘述了。</p>
+<h3 id="完整情况"><a href="#完整情况" class="headerlink" title="完整情况"></a>完整情况</h3><p>上面的讨论有严格的限制条件，现在来讨论无限制情况下，如何利用上面的分析结果完成循环赛的安排。这里分别讨论博主解决问题时想到的几种思路。</p>
+<h4 id="第0种思路"><a href="#第0种思路" class="headerlink" title="第0种思路"></a>第0种思路</h4><p>考虑分解原问题过程中，如果遇到原问题的规模为奇数$2k-1$，则求解问题规模为$2k$的问题，进一步将其分割为两个规模为$k$的子问题。如果按照上面的讨论，将其简单拼接，得到的原问题的解就会超过要求的$2k-1$，读者可自行用规模为5的原问题代入验证。</p>
+<h4 id="第1种思路"><a href="#第1种思路" class="headerlink" title="第1种思路"></a>第1种思路</h4><p>通过对第一种思路的思考，可以知道，面对原问题或子问题为奇数的情况不能简单应用复制子问题和镜像问题的解，需要做特别处理。<br>具体处理奇数规模的办法博主最后还是没想出来，但是在网上找到了解法，最后看了几遍代码，感觉挺有道理的，但是数学功底不够，没法完全证明该方法是对的。接下来的讨论就是对网上找到的处理方法的分析。</p>
+<h4 id="抄来的思路"><a href="#抄来的思路" class="headerlink" title="抄来的思路"></a>抄来的思路</h4><ol>
+<li>首先从解决原问题开始</li>
+</ol>
+<ul>
+<li>如果原问题规模是偶数2k，就递归分治求解原问题一半规模的子问题</li>
+<li>如果原问题规模是奇数2k-1，就改为求解规模为2k的原问题（称为<strong>凑偶后的原问题</strong>），递归求解规模为k的子问题，求解过程中引入编号为2k的<strong>虚选手</strong></li>
+<li>对于子问题而言，原问题和凑偶的原问题等价</li>
+<li><strong>注意，虚选手是对应当前子问题和其原问题而言</strong></li>
+</ul>
+<ol start="2">
+<li>子问题的递归求解结束后，开始通过对子问题的解合并处理得到原问题的解<ul>
+<li>若子问题的规模为偶数2k，那么不存在引入虚选手的情况，只需要如简单情况中，对子问题[1:k]进行直接复制即可</li>
+<li>若子问题的规模为奇数(2k-1)，则对应原文题规模为4k-2,此时对于原问题而言，编号2k的选手为需要忽略的虚选手</li>
+</ul>
+</li>
+<li>区别处理的方法是<strong>按顺序取余</strong>（下文具体讲）</li>
+</ol>
+<p>觉得上面讲的比较抽象的话，可以看下面的示意图，以规模为6的原问题为例<br><img src="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2023-29-41.png" alt="规模为6的示意图1"><br><img src="http://ock1p2k5t.bkt.clouddn.com/roundmatch/Screenshot%20from%202017-04-11%2023-52-50.png" alt="规模为6的示意图2"></p>
+<ol>
+<li>图1为规模为6的原问题（红色部分仅为坐标，无意义），此时传入规模为3的子问题进行求解，如图2</li>
+<li>规模为3时，需要凑偶为规模为4的原问题，接着对规模为2的子问题求解，如图3</li>
+<li>得到规模为2的问题的解后，应用简单情况的做法，将图3中绿色部分的解复制得到图4中黄色部分。黄色部分与绿色部分即为问题规模为4的问题的解。其中编号4的选手为<strong>虚选手</strong>，即图中标x位置为额外引入</li>
+<li>得到规模为4的子问题的解后（图5），对于规模为6的原问题需要解决对剩余部分的填充。</li>
+<li>对于规模为6的原问题，分割所得的两个规模为3的子问题，在简单情况中，[1:3]和[4:6]还是互为镜像的两部分，可使用复制的镜像元素的方法覆盖[4:6][1:3]区域，如图6</li>
+<li>接着对之前引入的虚选手进行消除，<strong>对第i列的x位置，填入选手i的镜像选手</strong>如第一天（蓝色第二列），在蓝色第三行x中填入3的镜像选手6,在蓝色第六行x中填入6的镜像选手3。如图7</li>
+<li>最后需要解决剩余两列的安排，经过前面的分析可以知道，对于规模为2(2k-1)的问题，<strong>i(i&lt;=2k-1)号选手与1~2k-1位选手及其镜像选手(i+2k-1)</strong>的比赛已经在前(2k-1)天安排完。意味着，<strong>对于第i位选手，在剩余的第2k~2(2k-1)-1天需要安排其与2k～2(2k-1)中除去i的镜像选手的2k-2位选手的比赛</strong>。代入规模为6,即第1～3号选手之间的比赛与其中任一选手与其镜像选手的比赛已在前三天安排完毕，1～3号选手中每人需要与4～6号选手中除去对应镜像选手后剩余两位选手比赛。</li>
+<li>对剩余两位选手的比赛就需要用顺序取余的办法安排。对于i(i&lt;=2k-1)号选手，令其在第2k天与其镜像选手的<strong>下一顺位选手{i+[2k-1]+1)%(2k-1) + (2k-1)}</strong>比赛，以此类推。</li>
+<li>对第1～2k-1位选手的剩余比赛安排后，如图8绿色部分。最后再将该绿色部分复制到下半部分对应镜像选手中即可得到规模为6的原问题的解（最后一张图就不放啦）</li>
+</ol>
+<p>贴上代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">arrange</span><span class="params">(<span class="keyword">int</span>** arr,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (len == <span class="number">1</span>)&#123;</span><br><span class="line">        arr[<span class="number">1</span>][<span class="number">1</span>]=<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(len&amp;<span class="number">1</span>) </span><br><span class="line">        len++;                          <span class="comment">//len为奇数，转化为求解len+1的情况</span></span><br><span class="line">    <span class="keyword">int</span> half_len=len/<span class="number">2</span>;</span><br><span class="line">    arrange(arr, half_len);             <span class="comment">//已完成规模为half_len的排列，即矩阵[1：half_len][1：half_len+1]，表示对half_len位选手在第2～half_len天内的安排</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=half_len;i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=half_len+<span class="number">1</span>;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[i][j]&gt;half_len)&#123;     <span class="comment">//当前位置为第i位选手对阵第half_len+1号选手（虚选手），表示该位置对i选手空闲</span></span><br><span class="line">                arr[i+half_len][j]=i;   <span class="comment">//对当天的两个空位进行填补，由于矩阵[half_len+1:len][1:half_len+1]为[1:half_len][1:half_len+1]的镜像</span></span><br><span class="line">                arr[i][j]=i+half_len;   <span class="comment">//可使互为镜像的两个选手在当天（第1-half_len天内空闲的一天）比赛</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> c=i+half_len+<span class="number">1</span>;     <span class="comment">//c为与i为镜像的选手的下一顺位选手，i与其镜像选手的比赛在第1～half_len天已安排</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k=half_len+<span class="number">2</span>;(half_len&amp;<span class="number">1</span>)&amp;&amp;k&lt;=len;k++,c++)&#123;</span><br><span class="line">                    <span class="comment">//k为[half_len+2:len]循环，安排i选手与其他非镜像选手的比赛</span></span><br><span class="line">                    <span class="keyword">if</span>(c==i+half_len)  c++;    <span class="comment">//若c为当前排列选手的镜像选手，则按顺位取下一位选手</span></span><br><span class="line">                    <span class="keyword">if</span>(c&gt;len) c-=half_len;     <span class="comment">//对t在范围[half_len+1:len]中取余</span></span><br><span class="line">                    arr[i][k]=c;        </span><br><span class="line">                    arr[c][k]=i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;                                           <span class="comment">//当前与第i号选手比赛的是1～half_len号，互不为镜像选手</span></span><br><span class="line">                arr[i+half_len][j]=arr[i][j]+half_len;      <span class="comment">//复制第i位选手的安排成为其镜像选手的比赛安排</span></span><br><span class="line">                <span class="keyword">if</span>((half_len%<span class="number">2</span>==<span class="number">0</span>)||half_len==<span class="number">1</span>)&#123;           <span class="comment">//对于子规模为偶数的情况，复制子问题[1:half_len][1:half_len]至[1:len][1:len]</span></span><br><span class="line">                    arr[i+half_len][j+half_len]=arr[i][j];</span><br><span class="line">                    arr[i][j+half_len]=arr[i+half_len][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k;</span><br><span class="line">    <span class="keyword">char</span> blank = <span class="string">'x'</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"input num of player: "</span>;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; k;</span><br><span class="line">    <span class="keyword">int</span> **arr = <span class="keyword">new</span> <span class="keyword">int</span> *[k + <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= k+<span class="number">1</span>; i++)</span><br><span class="line">        arr[i] = <span class="keyword">new</span> <span class="keyword">int</span>[k + <span class="number">2</span>];</span><br><span class="line">    <span class="built_in">memset</span>(arr,<span class="number">0</span>,<span class="keyword">sizeof</span>(arr));</span><br><span class="line">    <span class="keyword">if</span>(k&amp;<span class="number">1</span>)</span><br><span class="line">        arrange(arr, k + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        arrange(arr, k);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= k; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=k+(k&amp;<span class="number">1</span>);j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(arr[i][j]&gt;k)</span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; <span class="string">'x'</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; arr[i][j];</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; (j == <span class="number">1</span> ? <span class="string">": "</span> : <span class="string">" "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>打算把这篇博客当作实验报告交上去hhh</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/tags/算法设计/" rel="tag"># 算法设计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/03/promise/" rel="next" title="Promise简单实现原理">
+                <i class="fa fa-chevron-left"></i> Promise简单实现原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="GhosKno" />
+            
+              <p class="site-author-name" itemprop="name">GhosKno</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GhosKno" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ghosknochen@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目"><span class="nav-number">2.0.1.</span> <span class="nav-text">题目</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单情况"><span class="nav-number">2.1.</span> <span class="nav-text">简单情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整情况"><span class="nav-number">2.2.</span> <span class="nav-text">完整情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第0种思路"><span class="nav-number">2.2.1.</span> <span class="nav-text">第0种思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第1种思路"><span class="nav-number">2.2.2.</span> <span class="nav-text">第1种思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抄来的思路"><span class="nav-number">2.2.3.</span> <span class="nav-text">抄来的思路</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GhosKno</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
