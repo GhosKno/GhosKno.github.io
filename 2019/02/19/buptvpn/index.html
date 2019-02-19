@@ -60,7 +60,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Linux/Ubuntu,Docker,Globalprotect,BUPT,">
 
 
 
@@ -71,13 +71,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="这里该有个GhosKno">
-<meta property="og:url" content="http://ghoskno.github.io/archives/2017/index.html">
+<meta name="description" content="前言记录一下假期在家折腾Ubuntu用VPN连学校校园网的过程。北邮用的VPN是Globalprotect VPN，这玩意在Windows上虽然比较恶心，但至少能用。我假期的时候需要上学校内网，想在自己的Ubuntu上装这个Globalprotect，结果只找到了一堆emmm的教程，要么要装很多乱七八糟的东西嫌搞坏环境，要么没用。后来找到一个用Docker连接的方案，觉得太合适了，这里简单记录一下">
+<meta name="keywords" content="Linux&#x2F;Ubuntu,Docker,Globalprotect,BUPT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux&#x2F;Ubuntu Docker 使用GlobalProtect VPN连接北邮校园网">
+<meta property="og:url" content="http://ghoskno.github.io/2019/02/19/buptvpn/index.html">
 <meta property="og:site_name" content="这里该有个GhosKno">
+<meta property="og:description" content="前言记录一下假期在家折腾Ubuntu用VPN连学校校园网的过程。北邮用的VPN是Globalprotect VPN，这玩意在Windows上虽然比较恶心，但至少能用。我假期的时候需要上学校内网，想在自己的Ubuntu上装这个Globalprotect，结果只找到了一堆emmm的教程，要么要装很多乱七八糟的东西嫌搞坏环境，要么没用。后来找到一个用Docker连接的方案，觉得太合适了，这里简单记录一下">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-19T03:56:28.942Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="这里该有个GhosKno">
+<meta name="twitter:title" content="Linux&#x2F;Ubuntu Docker 使用GlobalProtect VPN连接北邮校园网">
+<meta name="twitter:description" content="前言记录一下假期在家折腾Ubuntu用VPN连学校校园网的过程。北邮用的VPN是Globalprotect VPN，这玩意在Windows上虽然比较恶心，但至少能用。我假期的时候需要上学校内网，想在自己的Ubuntu上装这个Globalprotect，结果只找到了一堆emmm的教程，要么要装很多乱七八糟的东西嫌搞坏环境，要么没用。后来找到一个用Docker连接的方案，觉得太合适了，这里简单记录一下">
 
 
 
@@ -107,13 +112,13 @@
 
 
 
-  <link rel="canonical" href="http://ghoskno.github.io/archives/2017/">
+  <link rel="canonical" href="http://ghoskno.github.io/2019/02/19/buptvpn/">
 
 
 
 
 
-  <title>归档 | 这里该有个GhosKno</title>
+  <title>Linux/Ubuntu Docker 使用GlobalProtect VPN连接北邮校园网 | 这里该有个GhosKno</title>
   
 
 
@@ -132,7 +137,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -236,212 +241,221 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ghoskno.github.io/2019/02/19/buptvpn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="GhosKno">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="这里该有个GhosKno">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">Linux/Ubuntu Docker 使用GlobalProtect VPN连接北邮校园网</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-19T00:00:00+08:00">
+                2019-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 9 篇日志。 继续努力。
-      </span>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/11/roundmatch/" itemprop="url">
-              
-                <span itemprop="name">分治法实现循环赛算法笔记</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-04-11T18:07:25+08:00" content="2017-04-11">
-          04-11
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/03/promise/" itemprop="url">
-              
-                <span itemprop="name">Promise简单实现原理</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-04-03T17:22:22+08:00" content="2017-04-03">
-          04-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/31/douban-spider/" itemprop="url">
-              
-                <span itemprop="name">Node.js实现爬虫异步抓取豆瓣图书信息</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-03-31T13:48:06+08:00" content="2017-03-31">
-          03-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一下假期在家折腾Ubuntu用VPN连学校校园网的过程。北邮用的VPN是Globalprotect VPN，这玩意在Windows上虽然比较恶心，但至少能用。我假期的时候需要上学校内网，想在自己的Ubuntu上装这个Globalprotect，结果只找到了一堆emmm的教程，要么要装很多乱七八糟的东西嫌搞坏环境，要么没用。后来找到一个用Docker连接的方案，觉得太合适了，这里简单记录一下。</p>
+<a id="more"></a>
+<h2 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h2><p>不说</p>
+<h2 id="镜像拉取及使用"><a href="#镜像拉取及使用" class="headerlink" title="镜像拉取及使用"></a>镜像拉取及使用</h2><p>在Linux/Ubuntu上有一个支持Globalprotect协议的VPN，<a href="https://github.com/dlenski/openconnect" target="_blank" rel="noopener">OpenConnect</a>，这里只介绍Docker使用方案。</p>
+<ol>
+<li><p>拉取仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/dlenski/openconnect.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> openconnect</span><br><span class="line">docker build -t openconnect .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用：连接BUPT 内网</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -ti --rm --privileged --net=host openconnect /bin/bash -c <span class="string">'./openconnect --protocol=gp vpn.bupt.edu.cn'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Done<br>没了</p>
+</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>糟了，要喜欢上这种随随便便写博客的感觉了</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/21/balabala/" itemprop="url">
-              
-                <span itemprop="name">balabala</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-03-21T21:41:45+08:00" content="2017-03-21">
-          03-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/21/vue-bind/" itemprop="url">
-              
-                <span itemprop="name">简单实现仿Vuejs双向绑定</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-02-21T22:11:18+08:00" content="2017-02-21">
-          02-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>用钱砸我</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="GhosKno 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="GhosKno 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-Ubuntu/" rel="tag"># Linux/Ubuntu</a>
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+            <a href="/tags/Globalprotect/" rel="tag"># Globalprotect</a>
+          
+            <a href="/tags/BUPT/" rel="tag"># BUPT</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/29/ABC-CNN/" rel="next" title="ABC-CNN阅读笔记">
+                <i class="fa fa-chevron-left"></i> ABC-CNN阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -449,6 +463,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -469,8 +487,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -548,6 +575,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Docker"><span class="nav-number">2.</span> <span class="nav-text">安装Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像拉取及使用"><span class="nav-number">3.</span> <span class="nav-text">镜像拉取及使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -701,6 +744,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
